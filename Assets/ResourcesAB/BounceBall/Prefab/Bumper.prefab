@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7503045693594335356}
   - component: {fileID: 6323117588467849389}
+  - component: {fileID: -7408875768159042145}
   m_Layer: 0
   m_Name: Bumper
   m_TagString: Untagged
@@ -68,6 +69,20 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!114 &-7408875768159042145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6883613879470743352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80d33b645a3496485e276d109ddd3f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 2
+  ID: 0
 --- !u!1 &7786026714466580206
 GameObject:
   m_ObjectHideFlags: 0

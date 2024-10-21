@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Assets/Scripts/Spawner.cs" />
     <Compile Include="Assets/Scripts/Recorder.cs" />
+    <Compile Include="Assets/Scripts/IdentifierComp.cs" />
     <Compile Include="Assets/Scripts/PathDataManager.cs" />
     <Compile Include="Assets/Scripts/Ball.cs" />
     <Compile Include="Assets/Scripts/Replayer.cs" />

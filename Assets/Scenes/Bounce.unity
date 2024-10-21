@@ -338,11 +338,10 @@ MonoBehaviour:
   RecordBallInstance: {fileID: 3886515429115607125, guid: ac04254b6d9cc4fca967caaaa3a252f6, type: 3}
   ReplayBallInstance: {fileID: 4546111247683147570, guid: dcc244aafb57a40f986c9417edcb6402, type: 3}
   Mode: 0
-  RecordMode: 0
-  XOffsetRange: {x: -1, y: 1}
-  YOffsetRange: {x: -1, y: 1}
   XOffset: 0
   YOffset: 0
+  XOffsetRange: {x: -1, y: 1}
+  YOffsetRange: {x: -1, y: 1}
 --- !u!1001 &53258912
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -351,6 +350,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 908090758}
     m_Modifications:
+    - target: {fileID: -7408875768159042145, guid: bd097236c7e47470c87086d546fb8ad1, type: 3}
+      propertyPath: ID
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 6883613879470743352, guid: bd097236c7e47470c87086d546fb8ad1, type: 3}
       propertyPath: m_Name
       value: Bumper2
@@ -736,9 +739,13 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2128948420}
     m_Modifications:
+    - target: {fileID: 966577297253395434, guid: 045760da826ee4b5790df70a0a0dd4b7, type: 3}
+      propertyPath: ID
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 2458833886238900490, guid: 045760da826ee4b5790df70a0a0dd4b7, type: 3}
       propertyPath: m_Name
-      value: CollectionZone (4)
+      value: CollectionZone (5)
       objectReference: {fileID: 0}
     - target: {fileID: 5031266126246300652, guid: 045760da826ee4b5790df70a0a0dd4b7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1462,9 +1469,13 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2128948420}
     m_Modifications:
+    - target: {fileID: 966577297253395434, guid: 045760da826ee4b5790df70a0a0dd4b7, type: 3}
+      propertyPath: ID
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 2458833886238900490, guid: 045760da826ee4b5790df70a0a0dd4b7, type: 3}
       propertyPath: m_Name
-      value: CollectionZone (5)
+      value: CollectionZone (4)
       objectReference: {fileID: 0}
     - target: {fileID: 5031266126246300652, guid: 045760da826ee4b5790df70a0a0dd4b7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3703,6 +3714,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2128948420}
     m_Modifications:
+    - target: {fileID: 966577297253395434, guid: 045760da826ee4b5790df70a0a0dd4b7, type: 3}
+      propertyPath: ID
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 2458833886238900490, guid: 045760da826ee4b5790df70a0a0dd4b7, type: 3}
       propertyPath: m_Name
       value: CollectionZone (3)
@@ -3889,6 +3904,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2128948420}
     m_Modifications:
+    - target: {fileID: 966577297253395434, guid: 045760da826ee4b5790df70a0a0dd4b7, type: 3}
+      propertyPath: ID
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2458833886238900490, guid: 045760da826ee4b5790df70a0a0dd4b7, type: 3}
       propertyPath: m_Name
       value: CollectionZone (1)
@@ -3951,6 +3970,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2128948420}
     m_Modifications:
+    - target: {fileID: 966577297253395434, guid: 045760da826ee4b5790df70a0a0dd4b7, type: 3}
+      propertyPath: ID
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 2458833886238900490, guid: 045760da826ee4b5790df70a0a0dd4b7, type: 3}
       propertyPath: m_Name
       value: CollectionZone (6)
@@ -4013,6 +4036,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 908090758}
     m_Modifications:
+    - target: {fileID: -7408875768159042145, guid: bd097236c7e47470c87086d546fb8ad1, type: 3}
+      propertyPath: ID
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6883613879470743352, guid: bd097236c7e47470c87086d546fb8ad1, type: 3}
       propertyPath: m_Name
       value: Bumper3
@@ -4075,6 +4102,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2128948420}
     m_Modifications:
+    - target: {fileID: 966577297253395434, guid: 045760da826ee4b5790df70a0a0dd4b7, type: 3}
+      propertyPath: ID
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2458833886238900490, guid: 045760da826ee4b5790df70a0a0dd4b7, type: 3}
       propertyPath: m_Name
       value: CollectionZone (2)
@@ -4364,8 +4395,8 @@ Transform:
   - {fileID: 1971950581}
   - {fileID: 2018906206}
   - {fileID: 1681307196}
-  - {fileID: 217032069}
   - {fileID: 618997486}
+  - {fileID: 217032069}
   - {fileID: 1977271609}
   m_Father: {fileID: 1097358975}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4752,6 +4783,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2128948420}
     m_Modifications:
+    - target: {fileID: 966577297253395434, guid: 045760da826ee4b5790df70a0a0dd4b7, type: 3}
+      propertyPath: ID
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2458833886238900490, guid: 045760da826ee4b5790df70a0a0dd4b7, type: 3}
       propertyPath: m_Name
       value: CollectionZone
@@ -4819,6 +4854,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 908090758}
     m_Modifications:
+    - target: {fileID: -7408875768159042145, guid: bd097236c7e47470c87086d546fb8ad1, type: 3}
+      propertyPath: ID
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6883613879470743352, guid: bd097236c7e47470c87086d546fb8ad1, type: 3}
       propertyPath: m_Name
       value: Bumper1

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8580015730331351612}
   - component: {fileID: 8532260980253221996}
   - component: {fileID: 4551526750765461685}
+  - component: {fileID: -8715882077532867181}
   m_Layer: 0
   m_Name: Wall
   m_TagString: Untagged
@@ -158,3 +159,17 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &-8715882077532867181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5895728197510517748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80d33b645a3496485e276d109ddd3f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 3
+  ID: 0

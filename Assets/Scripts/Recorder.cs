@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class Recorder : MonoBehaviour
 {
-    // Start is called before the first frame update
     private PathData _data;
     private float _timeElapsed;
 
@@ -33,7 +32,7 @@ public class Recorder : MonoBehaviour
         Log($"OnCollisionEnter2D with {other.gameObject.name}, HitPos {gameObject.transform.position}");
         _data.PathPoints.Add(new HitPointData()
         {
-            ID = other.gameObject.name,
+            ID = PathDataManager.GetIdentifier(other.gameObject),
             Type = EHitType.CollisionEnter,
             Pos = gameObject.transform.position,
             Time = _timeElapsed
@@ -45,7 +44,7 @@ public class Recorder : MonoBehaviour
         Log($"OnCollisionStay2D with {other.gameObject.name}, HitPos {gameObject.transform.position}");
         _data.PathPoints.Add(new HitPointData()
         {
-            ID = other.gameObject.name,
+            ID = PathDataManager.GetIdentifier(other.gameObject),
             Type = EHitType.CollisionStay,
             Pos = gameObject.transform.position,
             Time = _timeElapsed
@@ -57,16 +56,33 @@ public class Recorder : MonoBehaviour
         Log($"OnCollisionExit2D with {other.gameObject.name}, HitPos {gameObject.transform.position}");
         _data.PathPoints.Add(new HitPointData()
         {
-            ID = other.gameObject.name,
+            ID = PathDataManager.GetIdentifier(other.gameObject),
             Type = EHitType.CollisionExit,
             Pos = gameObject.transform.position,
             Time = _timeElapsed
         });
     }
+    
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        Debug.Log("TriggerEnter " + other.gameObject.name);
+        var identifier = other.gameObject.GetComponent<IdentifierComp>();
+        if(identifier != null && identifier.Type == EFrameType.CollectionZone)
+        {
+            _data.ReachCollectionZoneId = identifier.ID;
+        }
+        // {
+        //     Debug.Log("EnterZone " + other.gameObject.name);
+        //     Destroy(gameObject);
+        // }
+    }
 
     private void OnDestroy()
     {
         _data.RealRunDuration = _timeElapsed;
+        _data.Bumper1HitCount = _data.GetCollisionCount(EFrameType.Bumper, 1);
+        _data.Bumper2HitCount = _data.GetCollisionCount(EFrameType.Bumper, 2);
+        _data.Bumper3HitCount = _data.GetCollisionCount(EFrameType.Bumper, 3);
         Log($"OnDestroy, RealRunDuration {_data.RealRunDuration}");
         PathDataManager.AddData(1, _data);
         // var json = JsonUtility.ToJson(_data);

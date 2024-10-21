@@ -9,7 +9,27 @@ namespace DefaultNamespace
     public class PathData
     {
         public float RealRunDuration;
+        public float Bumper1HitCount;
+        public float Bumper2HitCount;
+        public float Bumper3HitCount;
+        public int ReachCollectionZoneId;
         public List<HitPointData> PathPoints = new List<HitPointData>();
+
+        public int GetCollisionCount(EFrameType frameType, int id)
+        {
+            var ret = 0;
+            var identifier = PathDataManager.GetIdentifier(frameType, id);
+            for (int i = 0; i < PathPoints.Count; i++)
+            {
+                var currHitPointData = PathPoints[i];
+                if (currHitPointData.ID.Equals(identifier) && currHitPointData.Type == EHitType.CollisionEnter)
+                {
+                    ret++;
+                }
+            }
+
+            return ret;
+        }
     }
 
     public enum EHitType
@@ -38,6 +58,21 @@ namespace DefaultNamespace
         public static string GetStoragePath(int id)
         {
             return Path.Combine(Application.dataPath, $"ResourcesAB/BounceBall/Data/{id}.json");
+        }
+        
+        public static string GetIdentifier(GameObject go)
+        {
+            if (go.GetComponent<IdentifierComp>() != null)
+            {
+                return go.GetComponent<IdentifierComp>().ToString();
+            }
+            
+            return go.name;
+        }
+        
+        public static string GetIdentifier(EFrameType type, int id)
+        {
+            return $"{type}#{id}";
         }
         
         public static void AddData(int id, PathData data)
