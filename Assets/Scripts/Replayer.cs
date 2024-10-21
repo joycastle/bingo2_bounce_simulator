@@ -9,7 +9,7 @@ namespace DefaultNamespace
         public void Init(PathData data)
         {
             _data = data;
-            transform.position = _data.PathPoints[0].Position;
+            transform.position = _data.PathPoints[0].Pos;
             StartCoroutine(MoveLoop());
         }
 
@@ -17,8 +17,8 @@ namespace DefaultNamespace
         {
             for (int i = 0; i < _data.PathPoints.Count - 1; i++)
             {
-                var positionEvaluate = CalculateMoveFunction(_data.PathPoints[i].Position, _data.PathPoints[i + 1].Position,
-                    _data.PathPoints[i + 1].TimeElapsed - _data.PathPoints[i].TimeElapsed);
+                var positionEvaluate = CalculateMoveFunction(_data.PathPoints[i].Pos, _data.PathPoints[i + 1].Pos,
+                    _data.PathPoints[i + 1].Time - _data.PathPoints[i].Time);
                 yield return DoMove(positionEvaluate);
             }
         }

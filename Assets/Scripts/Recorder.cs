@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using DefaultNamespace;
 using UnityEngine;
 
@@ -14,10 +15,10 @@ public class Recorder : MonoBehaviour
         _data.PathPoints = new List<HitPointData>();
         _data.PathPoints.Add(new HitPointData()
         {
-            HitID = "",
-            HitType = EHitType.CollisionExit,
-            Position = gameObject.transform.position,
-            TimeElapsed = 0f
+            ID = "",
+            Type = EHitType.CollisionExit,
+            Pos = gameObject.transform.position,
+            Time = 0f
         });
         _timeElapsed = 0;
     }
@@ -29,47 +30,52 @@ public class Recorder : MonoBehaviour
     
     private void OnCollisionEnter2D(Collision2D other)
     {
-        Debug.Log($"OnCollisionEnter2D with {other.gameObject.name}, HitPos {gameObject.transform.position}");
+        Log($"OnCollisionEnter2D with {other.gameObject.name}, HitPos {gameObject.transform.position}");
         _data.PathPoints.Add(new HitPointData()
         {
-            HitID = other.gameObject.name,
-            HitType = EHitType.CollisionEnter,
-            Position = gameObject.transform.position,
-            TimeElapsed = _timeElapsed
+            ID = other.gameObject.name,
+            Type = EHitType.CollisionEnter,
+            Pos = gameObject.transform.position,
+            Time = _timeElapsed
         });
     }
 
     private void OnCollisionStay2D(Collision2D other)
     {
-        Debug.Log($"OnCollisionStay2D with {other.gameObject.name}, HitPos {gameObject.transform.position}");
+        Log($"OnCollisionStay2D with {other.gameObject.name}, HitPos {gameObject.transform.position}");
         _data.PathPoints.Add(new HitPointData()
         {
-            HitID = other.gameObject.name,
-            HitType = EHitType.CollisionStay,
-            Position = gameObject.transform.position,
-            TimeElapsed = _timeElapsed
+            ID = other.gameObject.name,
+            Type = EHitType.CollisionStay,
+            Pos = gameObject.transform.position,
+            Time = _timeElapsed
         });
     }
 
     private void OnCollisionExit2D(Collision2D other)
     {
-        Debug.Log($"OnCollisionExit2D with {other.gameObject.name}, HitPos {gameObject.transform.position}");
+        Log($"OnCollisionExit2D with {other.gameObject.name}, HitPos {gameObject.transform.position}");
         _data.PathPoints.Add(new HitPointData()
         {
-            HitID = other.gameObject.name,
-            HitType = EHitType.CollisionExit,
-            Position = gameObject.transform.position,
-            TimeElapsed = _timeElapsed
+            ID = other.gameObject.name,
+            Type = EHitType.CollisionExit,
+            Pos = gameObject.transform.position,
+            Time = _timeElapsed
         });
     }
 
     private void OnDestroy()
     {
         _data.RealRunDuration = _timeElapsed;
-        Debug.Log($"OnDestroy, RealRunDuration {_data.RealRunDuration}");
+        Log($"OnDestroy, RealRunDuration {_data.RealRunDuration}");
         PathDataManager.AddData(1, _data);
         // var json = JsonUtility.ToJson(_data);
         // Debug.Log($"{json}");
+    }
+
+    private void Log(string s)
+    {
+        // Debug.Log(s);
     }
 }
 

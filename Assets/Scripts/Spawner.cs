@@ -30,15 +30,13 @@ public class Spawner : MonoBehaviour
     {
         LitJsonRegister.Register();
     }
-
-    // Start is called before the first frame update
+    
     void Start()
     {
         BtnSpawnBallAtPos.onClick.AddListener(SpawnBallAtPos);
         BtnSpawnBallRandom.onClick.AddListener(SpawnRandomBall);
     }
 
-    // Update is called once per frame
     void Update()
     {
         

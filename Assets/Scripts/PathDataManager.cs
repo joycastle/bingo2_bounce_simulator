@@ -21,10 +21,14 @@ namespace DefaultNamespace
 
     public struct HitPointData
     {
-        public string HitID;
-        public EHitType HitType;
-        public Vector3 Position;
-        public float TimeElapsed;
+        //碰撞到的物体的ID
+        public string ID;
+        //碰撞类型
+        public EHitType Type;
+        //碰撞发生的位置
+        public Vector2 Pos;
+        //碰撞发生的时间
+        public float Time;
         // public Vector3 InVelocity;
         // public Vector3 OutVelocity;
     }
