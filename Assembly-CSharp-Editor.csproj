@@ -376,6 +376,9 @@
     <Reference Include="Mono.Cecil">
       <HintPath>/Users/joe/Dev/BounceGame/Library/PackageCache/com.unity.nuget.mono-cecil@1.11.4/Mono.Cecil.dll</HintPath>
     </Reference>
+    <Reference Include="LitJson">
+      <HintPath>/Users/joe/Dev/BounceGame/Assets/Plugins/LitJson.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>/Applications/Unity/Hub/Editor/2022.3.34f1/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
     </Reference>

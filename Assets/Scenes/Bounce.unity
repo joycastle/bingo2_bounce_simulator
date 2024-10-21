@@ -335,6 +335,10 @@ MonoBehaviour:
   BtnSpawnBallAtPos: {fileID: 979272864}
   BtnSpawnBallRandom: {fileID: 565475534}
   BallInstance: {fileID: 6457036923586815123, guid: c6606ccbd5c524f94bedeb9d95ceef10, type: 3}
+  RecordBallInstance: {fileID: 3886515429115607125, guid: ac04254b6d9cc4fca967caaaa3a252f6, type: 3}
+  ReplayBallInstance: {fileID: 4546111247683147570, guid: dcc244aafb57a40f986c9417edcb6402, type: 3}
+  Mode: 0
+  RecordMode: 0
   XOffsetRange: {x: -1, y: 1}
   YOffsetRange: {x: -1, y: 1}
   XOffset: 0

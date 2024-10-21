@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DefaultNamespace;
+using LitJson;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,6 +11,7 @@ public class Tools
     [MenuItem("Tools/GeometryPlace")]
     public static void GeometryPlace()
     {
+        System.Single a;
         // 获取所有选中的游戏对象
         var selectedObjects = Selection.gameObjects;
 
@@ -120,4 +123,41 @@ public class Tools
         }
     }
 
+    [MenuItem("Tools/TestJson")]
+    public static void TestJson()
+    {
+        var pathData = new PathData();
+        pathData.PathPoints = new List<HitPointData>();
+        pathData.RealRunDuration = 1f;
+        pathData.PathPoints.Add(new HitPointData()
+        {
+            HitID = "",
+            HitType = EHitType.CollisionExit,
+            Position = Vector3.zero,
+            TimeElapsed = 1f,
+        });
+        pathData.PathPoints.Add(new HitPointData()
+        {
+            HitID = "",
+            HitType = EHitType.CollisionEnter,
+            Position = Vector3.zero,
+            TimeElapsed = 2f,
+        });
+        pathData.PathPoints.Add(new HitPointData()
+        {
+            HitID = "",
+            HitType = EHitType.CollisionStay,
+            Position = Vector3.zero,
+            TimeElapsed = 3f,
+        });
+        pathData.PathPoints.Add(new HitPointData()
+        {
+            HitID = "",
+            HitType = EHitType.CollisionExit,
+            Position = Vector3.zero,
+            TimeElapsed = 4f,
+        });
+        var json = JsonMapper.ToJson(pathData);
+        Debug.Log(json);
+    }
 }
