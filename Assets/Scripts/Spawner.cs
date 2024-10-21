@@ -18,14 +18,32 @@ public class Spawner : MonoBehaviour
     public GameObject ReplayBallInstance;
     public EMode Mode;
     
-    public bool RecordMode = false;
-    
-    public Vector2 XOffsetRange = new Vector2(-1, 1);
-    public Vector2 YOffsetRange = new Vector2(-1, 1);
-
     public float XOffset = 0f;
     public float YOffset = 0f;
-
+    [Button]
+    public void SpawnBallAtGivenPos()
+    {
+        var position = new Vector3(transform.position.x + XOffset, transform.position.y + YOffset,
+            transform.position.z);
+        var go = Instantiate(GetInstance(), position, Quaternion.identity);
+        PostProcess(go);
+    }
+    
+    [PropertyOrder(2)]
+    public Vector2 XOffsetRange = new Vector2(-1, 1);
+    [PropertyOrder(2)]
+    public Vector2 YOffsetRange = new Vector2(-1, 1);
+    [Button, PropertyOrder(2)]
+    public void SpawnBallAtRandomPos()
+    {
+        var xRandom = Random.Range(XOffsetRange.x, XOffsetRange.y);
+        var yRandom = Random.Range(YOffsetRange.x, YOffsetRange.y);
+        var position = new Vector3(transform.position.x + xRandom, transform.position.y + yRandom,
+            transform.position.z);
+        var go = Instantiate(GetInstance(), position, Quaternion.identity);
+        PostProcess(go);
+    }
+    
     private void Awake()
     {
         LitJsonRegister.Register();
@@ -33,8 +51,8 @@ public class Spawner : MonoBehaviour
     
     void Start()
     {
-        BtnSpawnBallAtPos.onClick.AddListener(SpawnBallAtPos);
-        BtnSpawnBallRandom.onClick.AddListener(SpawnRandomBall);
+        BtnSpawnBallAtPos.onClick.AddListener(SpawnBallAtGivenPos);
+        BtnSpawnBallRandom.onClick.AddListener(SpawnBallAtRandomPos);
     }
 
     void Update()
@@ -55,26 +73,6 @@ public class Spawner : MonoBehaviour
             default:
                 return BallInstance;
         }
-    }
-    
-    [Button]
-    public void SpawnBallAtPos()
-    {
-        var position = new Vector3(transform.position.x + XOffset, transform.position.y + YOffset,
-            transform.position.z);
-        var go = Instantiate(GetInstance(), position, Quaternion.identity);
-        PostProcess(go);
-    }
-    
-    [Button]
-    public void SpawnRandomBall()
-    {
-        var xRandom = Random.Range(XOffsetRange.x, XOffsetRange.y);
-        var yRandom = Random.Range(YOffsetRange.x, YOffsetRange.y);
-        var position = new Vector3(transform.position.x + xRandom, transform.position.y + yRandom,
-            transform.position.z);
-        var go = Instantiate(GetInstance(), position, Quaternion.identity);
-        PostProcess(go);
     }
 
     void PostProcess(GameObject go)
