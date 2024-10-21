@@ -13,6 +13,8 @@ namespace DefaultNamespace
         public float Bumper2HitCount;
         public float Bumper3HitCount;
         public int ReachCollectionZoneId;
+
+        public float InitXSpeed;
         public List<HitPointData> PathPoints = new List<HitPointData>();
 
         public int GetCollisionCount(EFrameType frameType, int id)

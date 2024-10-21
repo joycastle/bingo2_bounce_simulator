@@ -8,6 +8,11 @@ public class Recorder : MonoBehaviour
     private PathData _data;
     private float _timeElapsed;
 
+    public void RecordInitSpeed(float initXSpeed)
+    {
+        _data.InitXSpeed = initXSpeed;
+    }
+    
     void Awake()
     {
         _data = new PathData();

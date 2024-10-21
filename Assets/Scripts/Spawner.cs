@@ -20,13 +20,13 @@ public class Spawner : MonoBehaviour
     
     public float XOffset = 0f;
     public float YOffset = 0f;
+    public float XInitSpeed = 0f;
     [Button]
     public void SpawnBallAtGivenPos()
     {
         var position = new Vector3(transform.position.x + XOffset, transform.position.y + YOffset,
             transform.position.z);
-        var go = Instantiate(GetInstance(), position, Quaternion.identity);
-        PostProcess(go);
+        SpawnBall(position, new Vector2(XInitSpeed, 0));
     }
     
     [PropertyOrder(2)]
@@ -40,8 +40,13 @@ public class Spawner : MonoBehaviour
         var yRandom = Random.Range(YOffsetRange.x, YOffsetRange.y);
         var position = new Vector3(transform.position.x + xRandom, transform.position.y + yRandom,
             transform.position.z);
+        SpawnBall(position, new Vector2(XInitSpeed, 0));
+    }
+    
+    void SpawnBall(Vector3 position, Vector2 velocity)
+    {
         var go = Instantiate(GetInstance(), position, Quaternion.identity);
-        PostProcess(go);
+        PostProcess(go, velocity);
     }
     
     private void Awake()
@@ -75,12 +80,19 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    void PostProcess(GameObject go)
+    void PostProcess(GameObject go, Vector2 velocity)
     {
         if (Mode == EMode.Replay)
         {
             var replayer = go.GetComponent<Replayer>();
             replayer.Init(PathDataManager.GetData(1));
+        }
+        else if(Mode == EMode.Record)
+        {
+            var rigidbody2D = go.GetComponent<Rigidbody2D>();
+            rigidbody2D.velocity = velocity;
+            var recorder = go.GetComponent<Recorder>();
+            recorder.RecordInitSpeed(velocity.x);
         }
     }
 }
