@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DefaultNamespace;
+using JetBrains.Annotations;
 using LitJson;
 using UnityEngine;
 using Sirenix.OdinInspector;
@@ -10,43 +11,50 @@ using Random = UnityEngine.Random;
 
 public class Spawner : MonoBehaviour
 {
-    // [SerializeField]
     public Button BtnSpawnBallAtPos;
     public Button BtnSpawnBallRandom;
+    public List<GameObject> Inlets;
     public GameObject BallInstance;
     public GameObject RecordBallInstance;
     public GameObject ReplayBallInstance;
-    public EMode Mode;
+    public LaunchConfig Config;
+    public EMode Mode => Config.Mode;
     
-    public float XOffset = 0f;
-    public float YOffset = 0f;
-    public float XInitSpeed = 0f;
+    public float XOffset => Config.XOffset;
+    public float YOffset => Config.YOffset;
+    public float XInitSpeed => Config.XInitSpeed;
+    
+    public int InletId => Config.InletId;
     [Button]
     public void SpawnBallAtGivenPos()
     {
-        var position = new Vector3(transform.position.x + XOffset, transform.position.y + YOffset,
-            transform.position.z);
-        SpawnBall(position, new Vector2(XInitSpeed, 0));
+        var position = new Vector3(GetStartPosition(InletId).x + XOffset, GetStartPosition(InletId).y + YOffset,
+            GetStartPosition(InletId).z);
+        SpawnBall(InletId, position, new Vector2(XInitSpeed, 0));
     }
     
     [PropertyOrder(2)]
-    public Vector2 XOffsetRange = new Vector2(-1, 1);
-    [PropertyOrder(2)]
-    public Vector2 YOffsetRange = new Vector2(-1, 1);
+    public Vector2 XOffsetRange => Config.XOffsetRandomRange;
     [Button, PropertyOrder(2)]
     public void SpawnBallAtRandomPos()
     {
         var xRandom = Random.Range(XOffsetRange.x, XOffsetRange.y);
-        var yRandom = Random.Range(YOffsetRange.x, YOffsetRange.y);
-        var position = new Vector3(transform.position.x + xRandom, transform.position.y + yRandom,
-            transform.position.z);
-        SpawnBall(position, new Vector2(XInitSpeed, 0));
+        var yRandom = Random.Range(Config.GetYOffsetRange(xRandom).x, Config.GetYOffsetRange(xRandom).y);
+        var position = new Vector3(GetStartPosition(InletId).x + xRandom, GetStartPosition(InletId).y + yRandom,
+            GetStartPosition(InletId).z);
+        SpawnBall(InletId, position, new Vector2(XInitSpeed, 0));
+    }
+
+    Vector3 GetStartPosition(int inletId)
+    {
+        var index = inletId - 1;
+        return Inlets[index].transform.position;
     }
     
-    void SpawnBall(Vector3 position, Vector2 velocity)
+    void SpawnBall(int inletId, Vector3 position, Vector2 velocity)
     {
         var go = Instantiate(GetInstance(), position, Quaternion.identity);
-        PostProcess(go, velocity);
+        PostProcess(go, velocity, inletId);
     }
     
     private void Awake()
@@ -80,19 +88,24 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    void PostProcess(GameObject go, Vector2 velocity)
+    void PostProcess(GameObject go, Vector2 velocity, int inletId)
     {
         if (Mode == EMode.Replay)
         {
             var replayer = go.GetComponent<Replayer>();
-            replayer.Init(PathDataManager.GetData(1));
+            replayer.Init(PathDataManager.GetData(Config.ReplayId));
         }
         else if(Mode == EMode.Record)
         {
             var rigidbody2D = go.GetComponent<Rigidbody2D>();
             rigidbody2D.velocity = velocity;
             var recorder = go.GetComponent<Recorder>();
-            recorder.RecordInitSpeed(velocity.x);
+            recorder.RecordInParam(inletId, velocity.x);
+        }
+        else if(Mode == EMode.Normal)
+        {
+            var rigidbody2D = go.GetComponent<Rigidbody2D>();
+            rigidbody2D.velocity = velocity;
         }
     }
 }

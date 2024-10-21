@@ -21,6 +21,9 @@ namespace DefaultNamespace
                     _data.PathPoints[i + 1].Time - _data.PathPoints[i].Time);
                 yield return DoMove(positionEvaluate);
             }
+
+            yield return new WaitForSeconds(0.5f);
+            Destroy(gameObject);
         }
 
         IEnumerator DoMove(PositionEvaluate positionEvaluate)

@@ -8,8 +8,9 @@ public class Recorder : MonoBehaviour
     private PathData _data;
     private float _timeElapsed;
 
-    public void RecordInitSpeed(float initXSpeed)
+    public void RecordInParam(int inletId, float initXSpeed)
     {
+        _data.InletId = inletId;
         _data.InitXSpeed = initXSpeed;
     }
     
@@ -74,12 +75,8 @@ public class Recorder : MonoBehaviour
         var identifier = other.gameObject.GetComponent<IdentifierComp>();
         if(identifier != null && identifier.Type == EFrameType.CollectionZone)
         {
-            _data.ReachCollectionZoneId = identifier.ID;
+            _data.OutletId = identifier.ID;
         }
-        // {
-        //     Debug.Log("EnterZone " + other.gameObject.name);
-        //     Destroy(gameObject);
-        // }
     }
 
     private void OnDestroy()

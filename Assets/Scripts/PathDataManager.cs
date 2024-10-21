@@ -8,11 +8,12 @@ namespace DefaultNamespace
 {
     public class PathData
     {
+        public int InletId;
         public float RealRunDuration;
         public float Bumper1HitCount;
         public float Bumper2HitCount;
         public float Bumper3HitCount;
-        public int ReachCollectionZoneId;
+        public int OutletId;
 
         public float InitXSpeed;
         public List<HitPointData> PathPoints = new List<HitPointData>();
@@ -51,8 +52,6 @@ namespace DefaultNamespace
         public Vector2 Pos;
         //碰撞发生的时间
         public float Time;
-        // public Vector3 InVelocity;
-        // public Vector3 OutVelocity;
     }
     
     public class PathDataManager
