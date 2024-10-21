@@ -1,7 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DefaultNamespace;
 using LitJson;
 using UnityEditor;
 using UnityEngine;
@@ -122,42 +122,71 @@ public class Tools
             clone.transform.SetParent(toParent.transform);
         }
     }
-
-    [MenuItem("Tools/TestJson")]
-    public static void TestJson()
-    {
-        var pathData = new PathData();
-        pathData.PathPoints = new List<HitPointData>();
-        pathData.RealRunDuration = 1f;
-        pathData.PathPoints.Add(new HitPointData()
-        {
-            HitID = "",
-            HitType = EHitType.CollisionExit,
-            Position = Vector3.zero,
-            TimeElapsed = 1f,
-        });
-        pathData.PathPoints.Add(new HitPointData()
-        {
-            HitID = "",
-            HitType = EHitType.CollisionEnter,
-            Position = Vector3.zero,
-            TimeElapsed = 2f,
-        });
-        pathData.PathPoints.Add(new HitPointData()
-        {
-            HitID = "",
-            HitType = EHitType.CollisionStay,
-            Position = Vector3.zero,
-            TimeElapsed = 3f,
-        });
-        pathData.PathPoints.Add(new HitPointData()
-        {
-            HitID = "",
-            HitType = EHitType.CollisionExit,
-            Position = Vector3.zero,
-            TimeElapsed = 4f,
-        });
-        var json = JsonMapper.ToJson(pathData);
-        Debug.Log(json);
-    }
+    
+    // public class PathData
+    // {
+    //     public float RealRunDuration { get; set; }
+    //     public List<HitPointData> PathPoints = new List<HitPointData>();
+    // }
+    //
+    // public enum EHitType
+    // {
+    //     CollisionEnter,
+    //     CollisionStay,
+    //     CollisionExit
+    // }
+    //
+    // public struct HitPointData
+    // {
+    //     public string HitID;
+    //     public EHitType HitType;
+    //     public Vector3 Position;
+    //     public float TimeElapsed;
+    //     // public Vector3 InVelocity;
+    //     // public Vector3 OutVelocity;
+    // }
+    //
+    // [MenuItem("Tools/TestJson")]
+    // public static void TestJson()
+    // {
+    //     // Register();
+    //     // JsonMapper.RegisterExporter<float>((obj, writer) => writer.Write(Convert.ToDouble(obj)));
+    //     // JsonMapper.RegisterImporter<double, float>(input => Convert.ToSingle(input));
+    //     var pathData = new PathData();
+    //     pathData.PathPoints = new List<HitPointData>();
+    //     pathData.RealRunDuration = 1f;
+    //     pathData.PathPoints.Add(new HitPointData()
+    //     {
+    //         HitID = "",
+    //         HitType = EHitType.CollisionExit,
+    //         Position = Vector3.zero,
+    //         TimeElapsed = 1f,
+    //     });
+    //     pathData.PathPoints.Add(new HitPointData()
+    //     {
+    //         HitID = "",
+    //         HitType = EHitType.CollisionEnter,
+    //         Position = Vector3.zero,
+    //         TimeElapsed = 2f,
+    //     });
+    //     pathData.PathPoints.Add(new HitPointData()
+    //     {
+    //         HitID = "",
+    //         HitType = EHitType.CollisionStay,
+    //         Position = Vector3.zero,
+    //         TimeElapsed = 3f,
+    //     });
+    //     pathData.PathPoints.Add(new HitPointData()
+    //     {
+    //         HitID = "",
+    //         HitType = EHitType.CollisionExit,
+    //         Position = Vector3.zero,
+    //         TimeElapsed = 4f,
+    //     });
+    //     var json = JsonMapper.ToJson(pathData);
+    //     Debug.Log(json);
+    //     
+    // }
 }
+
+

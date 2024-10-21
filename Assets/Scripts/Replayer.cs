@@ -9,18 +9,19 @@ namespace DefaultNamespace
         public void Init(PathData data)
         {
             _data = data;
-            // transform.position = _data.PathPoints[0].Position;
+            transform.position = _data.PathPoints[0].Position;
+            StartCoroutine(MoveLoop());
         }
 
-        // IEnumerator MoveLoop()
-        // {
-        //     for (int i = 0; i < _data.PathPoints.Count - 1; i++)
-        //     {
-        //         var positionEvaluate = CalculateMoveFunction(_data.PathPoints[i].Position, _data.PathPoints[i + 1].Position,
-        //             _data.PathPoints[i + 1].TimeElapsed - _data.PathPoints[i].TimeElapsed);
-        //         yield return DoMove(positionEvaluate);
-        //     }
-        // }
+        IEnumerator MoveLoop()
+        {
+            for (int i = 0; i < _data.PathPoints.Count - 1; i++)
+            {
+                var positionEvaluate = CalculateMoveFunction(_data.PathPoints[i].Position, _data.PathPoints[i + 1].Position,
+                    _data.PathPoints[i + 1].TimeElapsed - _data.PathPoints[i].TimeElapsed);
+                yield return DoMove(positionEvaluate);
+            }
+        }
 
         IEnumerator DoMove(PositionEvaluate positionEvaluate)
         {
