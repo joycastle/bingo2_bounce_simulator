@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using Sirenix.OdinInspector.Editor.GettingStarted;
 using UnityEngine;
 
 namespace DefaultNamespace
@@ -8,7 +10,11 @@ namespace DefaultNamespace
     public class Replayer : MonoBehaviour
     {
         private PathData _data;
+#if UNITY_EDITOR
         private float _totalTime;
+        private List<float> simulationTime = new ();
+        private List<float> diffTime = new ();
+#endif
         public void Init(PathData data)
         {
             _data = data;
@@ -21,7 +27,11 @@ namespace DefaultNamespace
             for (int i = 0; i < _data.PathPoints.Count - 1; i++)
             {
                 var currentHitData = _data.PathPoints[i];
+#if UNITY_EDITOR
                 Debug.LogError($"OnHitPoint#{i}, SimulationTime {_totalTime}, ExpectTime {currentHitData.Time}, Diff {_totalTime - currentHitData.Time}");
+                simulationTime.Add(_totalTime);
+                diffTime.Add(_totalTime - currentHitData.Time);
+#endif
                 HandleCollisionEvent(currentHitData);
                 var positionEvaluate = CalculateMoveFunction(currentHitData.Pos, _data.PathPoints[i + 1].Pos,
                     _data.PathPoints[i + 1].Time - currentHitData.Time);
@@ -29,6 +39,10 @@ namespace DefaultNamespace
             }
 
             yield return new WaitForSeconds(0.5f);
+#if UNITY_EDITOR
+            Debug.LogError($"SimulationTime {string.Join(",", simulationTime)}");
+            Debug.LogError($"DiffTime {string.Join(",", diffTime)}");
+#endif
             Destroy(gameObject);
         }
 
