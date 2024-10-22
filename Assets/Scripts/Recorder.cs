@@ -73,9 +73,16 @@ public class Recorder : MonoBehaviour
     {
         Debug.Log("TriggerEnter " + other.gameObject.name);
         var identifier = other.gameObject.GetComponent<IdentifierComp>();
-        if(identifier != null && identifier.Type == EFrameType.CollectionZone)
+        if(identifier != null && identifier.Type == EFrameType.Outlet)
         {
             _data.OutletId = identifier.ID;
+            _data.PathPoints.Add(new HitPointData()
+            {
+                ID = PathDataManager.GetIdentifier(other.gameObject),
+                Type = EHitType.CollisionEnter,
+                Pos = gameObject.transform.position,
+                Time = _timeElapsed
+            });
         }
     }
 
@@ -93,7 +100,7 @@ public class Recorder : MonoBehaviour
 
     private void Log(string s)
     {
-        // Debug.Log(s);
+        Debug.Log(s);
     }
 }
 

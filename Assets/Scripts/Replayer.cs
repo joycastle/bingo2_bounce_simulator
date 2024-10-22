@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.ComponentModel;
 using UnityEngine;
@@ -7,6 +8,7 @@ namespace DefaultNamespace
     public class Replayer : MonoBehaviour
     {
         private PathData _data;
+        private float _totalTime;
         public void Init(PathData data)
         {
             _data = data;
@@ -19,6 +21,7 @@ namespace DefaultNamespace
             for (int i = 0; i < _data.PathPoints.Count - 1; i++)
             {
                 var currentHitData = _data.PathPoints[i];
+                Debug.LogError($"OnHitPoint#{i}, SimulationTime {_totalTime}, ExpectTime {currentHitData.Time}, Diff {_totalTime - currentHitData.Time}");
                 HandleCollisionEvent(currentHitData);
                 var positionEvaluate = CalculateMoveFunction(currentHitData.Pos, _data.PathPoints[i + 1].Pos,
                     _data.PathPoints[i + 1].Time - currentHitData.Time);
@@ -55,6 +58,11 @@ namespace DefaultNamespace
             var v_y0 = (endPos.y - startPos.y) / time + 0.5f * Mathf.Abs(Physics.gravity.y * time);
             var v_x0 = (endPos.x - startPos.x) / time;
             return new PositionEvaluate(startPos, endPos, new Vector3(v_x0, v_y0, 0), time);
+        }
+
+        private void Update()
+        {
+            _totalTime += Time.deltaTime;
         }
 
         public class PositionEvaluate

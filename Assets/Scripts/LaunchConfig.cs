@@ -15,13 +15,13 @@ public class LaunchConfig : ScriptableObject
     [Header("出球入口Id，决定球的初始位置，从左往右，从1开始")]
     public int InletId = 1;
     [ShowIf("IsRecordOrNormalMode")]
-    [Header("指定出球时，球的x坐标的偏移量")]
+    [BoxGroup("指定出球参数"), Header("球的x坐标的偏移量")]
     public float XOffset = 0f;
     [ShowIf("IsRecordOrNormalMode")]
-    [Header("指定出球时，球的y坐标的偏移量")]
+    [BoxGroup("指定出球参数"), Header("球的y坐标的偏移量")]
     public float YOffset = 0f;
     [ShowIf("IsRecordOrNormalMode")]
-    [Header("随机出球时，球的x坐标偏移的随机范围（均匀随机）")]
+    [BoxGroup("随机出球参数"), Header("球的x坐标偏移的随机范围（均匀随机）")]
     public Vector2 XOffsetRandomRange = new Vector2(-1, 1);
 
     [ShowIf("IsReplayMode")] 

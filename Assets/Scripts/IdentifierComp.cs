@@ -8,7 +8,7 @@ namespace DefaultNamespace
         Nail,
         Bumper,
         Wall,
-        CollectionZone,
+        Outlet,
     }
     public class IdentifierComp : MonoBehaviour
     {
