@@ -48,6 +48,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4209023427633392963, guid: c6606ccbd5c524f94bedeb9d95ceef10, type: 3}
+      propertyPath: m_Color.b
+      value: 0.0141509175
+      objectReference: {fileID: 0}
+    - target: {fileID: 4209023427633392963, guid: c6606ccbd5c524f94bedeb9d95ceef10, type: 3}
+      propertyPath: m_Color.g
+      value: 0.0141509175
+      objectReference: {fileID: 0}
+    - target: {fileID: 4209023427633392963, guid: c6606ccbd5c524f94bedeb9d95ceef10, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6457036923586815123, guid: c6606ccbd5c524f94bedeb9d95ceef10, type: 3}
       propertyPath: m_Name
       value: ReplayBall

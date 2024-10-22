@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using LitJson;
@@ -69,6 +70,22 @@ namespace DefaultNamespace
             }
             
             return go.name;
+        }
+
+        public static void FromIdentifier(string identifier, out EFrameType type, out int id)
+        {
+            var parts = identifier.Split('#');
+            try
+            {
+                type = (EFrameType) Enum.Parse(typeof(EFrameType), parts[0]);
+                id = int.Parse(parts[1]);
+            }
+            catch (Exception e)
+            {
+                Debug.Log($"Parse Identifier {identifier} fail");
+                type = EFrameType.None;
+                id = -1;
+            }
         }
         
         public static string GetIdentifier(EFrameType type, int id)

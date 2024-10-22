@@ -18,3 +18,4 @@ MonoBehaviour:
   XOffset: 0.5
   YOffset: 0.5
   XOffsetRandomRange: {x: -1, y: 1}
+  ReplayId: 1

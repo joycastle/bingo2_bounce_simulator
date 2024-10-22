@@ -25,12 +25,18 @@ public class Spawner : MonoBehaviour
     public float XInitSpeed => Config.XInitSpeed;
     
     public int InletId => Config.InletId;
+
     [Button]
     public void SpawnBallAtGivenPos()
     {
+        SpawnBallAtGivenPos(Mode);
+    }
+    
+    private void SpawnBallAtGivenPos(EMode mode)
+    {
         var position = new Vector3(GetStartPosition(InletId).x + XOffset, GetStartPosition(InletId).y + YOffset,
             GetStartPosition(InletId).z);
-        SpawnBall(InletId, position, new Vector2(XInitSpeed, 0));
+        SpawnBall(mode, InletId, position, new Vector2(XInitSpeed, 0));
     }
     
     [PropertyOrder(2)]
@@ -42,7 +48,14 @@ public class Spawner : MonoBehaviour
         var yRandom = Random.Range(Config.GetYOffsetRange(xRandom).x, Config.GetYOffsetRange(xRandom).y);
         var position = new Vector3(GetStartPosition(InletId).x + xRandom, GetStartPosition(InletId).y + yRandom,
             GetStartPosition(InletId).z);
-        SpawnBall(InletId, position, new Vector2(XInitSpeed, 0));
+        SpawnBall(Mode, InletId, position, new Vector2(XInitSpeed, 0));
+    }
+
+    [Button]
+    public void DoCompare()
+    {
+        SpawnBallAtGivenPos(EMode.Normal);
+        SpawnBallAtGivenPos(EMode.Replay);
     }
 
     Vector3 GetStartPosition(int inletId)
@@ -51,10 +64,10 @@ public class Spawner : MonoBehaviour
         return Inlets[index].transform.position;
     }
     
-    void SpawnBall(int inletId, Vector3 position, Vector2 velocity)
+    void SpawnBall(EMode mode, int inletId, Vector3 position, Vector2 velocity)
     {
-        var go = Instantiate(GetInstance(), position, Quaternion.identity);
-        PostProcess(go, velocity, inletId);
+        var go = Instantiate(GetInstance(mode), position, Quaternion.identity);
+        PostProcess(mode, go, velocity, inletId);
     }
     
     private void Awake()
@@ -73,9 +86,9 @@ public class Spawner : MonoBehaviour
         
     }
     
-    public GameObject GetInstance()
+    public GameObject GetInstance(EMode mode)
     {
-        switch (Mode)
+        switch (mode)
         {
             case EMode.Normal:
                 return BallInstance;
@@ -88,21 +101,21 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    void PostProcess(GameObject go, Vector2 velocity, int inletId)
+    void PostProcess(EMode mode, GameObject go, Vector2 velocity, int inletId)
     {
-        if (Mode == EMode.Replay)
+        if (mode == EMode.Replay)
         {
             var replayer = go.GetComponent<Replayer>();
             replayer.Init(PathDataManager.GetData(Config.ReplayId));
         }
-        else if(Mode == EMode.Record)
+        else if(mode == EMode.Record)
         {
             var rigidbody2D = go.GetComponent<Rigidbody2D>();
             rigidbody2D.velocity = velocity;
             var recorder = go.GetComponent<Recorder>();
             recorder.RecordInParam(inletId, velocity.x);
         }
-        else if(Mode == EMode.Normal)
+        else if(mode == EMode.Normal)
         {
             var rigidbody2D = go.GetComponent<Rigidbody2D>();
             rigidbody2D.velocity = velocity;

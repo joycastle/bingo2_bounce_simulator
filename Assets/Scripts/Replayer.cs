@@ -1,4 +1,5 @@
 using System.Collections;
+using System.ComponentModel;
 using UnityEngine;
 
 namespace DefaultNamespace
@@ -17,8 +18,10 @@ namespace DefaultNamespace
         {
             for (int i = 0; i < _data.PathPoints.Count - 1; i++)
             {
-                var positionEvaluate = CalculateMoveFunction(_data.PathPoints[i].Pos, _data.PathPoints[i + 1].Pos,
-                    _data.PathPoints[i + 1].Time - _data.PathPoints[i].Time);
+                var currentHitData = _data.PathPoints[i];
+                HandleCollisionEvent(currentHitData);
+                var positionEvaluate = CalculateMoveFunction(currentHitData.Pos, _data.PathPoints[i + 1].Pos,
+                    _data.PathPoints[i + 1].Time - currentHitData.Time);
                 yield return DoMove(positionEvaluate);
             }
 
@@ -26,10 +29,20 @@ namespace DefaultNamespace
             Destroy(gameObject);
         }
 
+        void HandleCollisionEvent(HitPointData data)
+        {
+            PathDataManager.FromIdentifier(data.ID, out var frameType, out var id); 
+            if(frameType == EFrameType.Bumper && data.Type == EHitType.CollisionEnter)
+            {
+                //TODOJOE sendEvent to UI
+                Debug.Log($"OnHitWith {frameType}#{id}");
+            }
+        }
+
         IEnumerator DoMove(PositionEvaluate positionEvaluate)
         {
             var timeElapsed = 0f;
-            while (timeElapsed <positionEvaluate.GetTime())
+            while (timeElapsed < positionEvaluate.GetTime())
             {
                 transform.position = positionEvaluate.GetPosition(timeElapsed);
                 timeElapsed += Time.deltaTime;
