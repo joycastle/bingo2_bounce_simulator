@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using LitJson;
 using NUnit.Framework.Constraints;
 using UnityEngine;
@@ -57,9 +60,9 @@ namespace DefaultNamespace
     
     public class PathDataManager
     {
-        public static string GetStoragePath(int id)
+        public static string GetStoragePath(string fileName)
         {
-            return Path.Combine(Application.dataPath, $"ResourcesAB/BounceBall/Data/{id}.json");
+            return Path.Combine(Application.dataPath, $"ResourcesAB/BounceBall/Data/{fileName}.json");
         }
         
         public static string GetIdentifier(GameObject go)
@@ -93,22 +96,76 @@ namespace DefaultNamespace
             return $"{type}#{id}";
         }
         
-        public static void AddData(int id, PathData data)
+        public static void AddData(PathData data)
         {
-            var path = GetStoragePath(id);
-            var json = JsonMapper.ToJson(data);
-            File.WriteAllText(path, json);
+            // var id = GetNextRecordId();
+            remainCount--;
+            Debug.Log($"AddData Remain {remainCount}");
+            if (remainCount == 0)
+            {
+                StopRecord();
+            }
+            dataQueue.Enqueue(JsonMapper.ToJson(data));
+        }
+
+        static ConcurrentQueue<string> dataQueue = new ConcurrentQueue<string>();
+        static string filePath;
+        static TaskCompletionSource<bool> tcs;
+        static int remainCount = 0;
+
+        public static async void StartRecord(int inletId, Vector2 xRange, float initXVelocity, int count)
+        {
+            var fileName = $"@{inletId}_Range_{xRange.x}-{xRange.y}_Vx{initXVelocity}_Num{count}";
+            filePath = GetStoragePath(fileName);
+            remainCount = count;
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+            if (tcs != null)
+            {
+                tcs.SetCanceled();
+            }
+            tcs = new TaskCompletionSource<bool>();
+            await ProcessDataAsync();
+            // Task fileWriteTask = Task.Run(ProcessDataAsync);
+            // await fileWriteTask;
         }
         
-        public static PathData GetData(int id)
+        static async Task ProcessDataAsync()
         {
-            var path = GetStoragePath(id);
+            using (var writer = new StreamWriter(filePath, true))
+            {
+                while (!dataQueue.IsEmpty || !tcs.Task.IsCompleted)
+                {
+                    if (dataQueue.TryDequeue(out string data))
+                    {
+                        Debug.Log("Write Data: " + data);
+                        await writer.WriteLineAsync(data);
+                    }
+                    else
+                    {
+                        await Task.Delay(10); // 短暂等待，避免CPU高速运行
+                    }
+                }
+            }
+        }
+        
+        public static void StopRecord()
+        {
+            Debug.Log("StopRecord");
+            tcs.SetResult(true);
+        }
+        
+        public static PathData GetData(string fileName, int line)
+        {
+            var path = GetStoragePath(fileName);
             if (!File.Exists(path))
             {
                 return null;
             }
-
-            var json = File.ReadAllText(path);
+            
+            var json = File.ReadAllLines(path)[line - 1];
             return JsonMapper.ToObject<PathData>(json);
         }
     }

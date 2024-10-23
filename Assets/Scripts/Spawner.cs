@@ -41,14 +41,33 @@ public class Spawner : MonoBehaviour
     
     [PropertyOrder(2)]
     public Vector2 XOffsetRange => Config.XOffsetRandomRange;
+    public static int ConcurrentBall = 0;
     [Button, PropertyOrder(2)]
-    public void SpawnBallAtRandomPos()
+    public IEnumerator SpawnBallAtRandomPos()
     {
-        var xRandom = Random.Range(XOffsetRange.x, XOffsetRange.y);
-        var yRandom = Random.Range(Config.GetYOffsetRange(xRandom).x, Config.GetYOffsetRange(xRandom).y);
-        var position = new Vector3(GetStartPosition(InletId).x + xRandom, GetStartPosition(InletId).y + yRandom,
-            GetStartPosition(InletId).z);
-        SpawnBall(Mode, InletId, position, new Vector2(XInitSpeed, 0));
+        PathDataManager.StartRecord(InletId, XOffsetRange, XInitSpeed, Config.Count);
+        var startTime = Time.realtimeSinceStartup;
+
+        var spawnedBall = 0;
+        while(spawnedBall < Config.Count)
+        {
+            if (ConcurrentBall < Config.MaxConcurrentBall)
+            {
+                var xRandom = Random.Range(XOffsetRange.x, XOffsetRange.y);
+                var yRandom = Random.Range(Config.GetYOffsetRange(xRandom).x, Config.GetYOffsetRange(xRandom).y);
+                var position = new Vector3(GetStartPosition(InletId).x + xRandom, GetStartPosition(InletId).y + yRandom,
+                    GetStartPosition(InletId).z);
+                SpawnBall(Mode, InletId, position, new Vector2(XInitSpeed, 0));
+                spawnedBall++;
+                ConcurrentBall++;
+            }
+            else
+            {
+                yield return new WaitUntil(() => ConcurrentBall < Config.MaxConcurrentBall);
+            }
+        }
+        
+        Debug.Log($"Simulate End Cost Time {Time.realtimeSinceStartup - startTime}s");
     }
 
     [Button]
@@ -78,7 +97,7 @@ public class Spawner : MonoBehaviour
     void Start()
     {
         BtnSpawnBallAtPos.onClick.AddListener(SpawnBallAtGivenPos);
-        BtnSpawnBallRandom.onClick.AddListener(SpawnBallAtRandomPos);
+        BtnSpawnBallRandom.onClick.AddListener(() => StartCoroutine(SpawnBallAtRandomPos()));
     }
 
     void Update()
@@ -106,7 +125,7 @@ public class Spawner : MonoBehaviour
         if (mode == EMode.Replay)
         {
             var replayer = go.GetComponent<Replayer>();
-            replayer.Init(PathDataManager.GetData(Config.ReplayId));
+            replayer.Init(PathDataManager.GetData(Config.ReplayFileName, Config.ReplayLineNum));
         }
         else if(mode == EMode.Record)
         {

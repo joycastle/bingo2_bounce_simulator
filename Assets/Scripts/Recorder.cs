@@ -48,13 +48,32 @@ public class Recorder : MonoBehaviour
     private void OnCollisionStay2D(Collision2D other)
     {
         Log($"OnCollisionStay2D with {other.gameObject.name}, HitPos {gameObject.transform.position}");
-        _data.PathPoints.Add(new HitPointData()
+        // _data.PathPoints.Add(new HitPointData()
+        // {
+        //     ID = PathDataManager.GetIdentifier(other.gameObject),
+        //     Type = EHitType.CollisionStay,
+        //     Pos = gameObject.transform.position,
+        //     Time = _timeElapsed
+        // });
+        if (_data.PathPoints.Count <= 0)
         {
-            ID = PathDataManager.GetIdentifier(other.gameObject),
-            Type = EHitType.CollisionStay,
-            Pos = gameObject.transform.position,
-            Time = _timeElapsed
-        });
+            Debug.LogError($"OnCollisionStay {other.gameObject.name}, HitPos {gameObject.transform.position} PathPoints is empty");
+        }
+        else
+        {
+            var lastData = _data.PathPoints.Last();
+            //stay状态只记录一个，减少存档大小
+            if (lastData.ID != other.gameObject.name)
+            {
+                _data.PathPoints.Add(new HitPointData()
+                {
+                    ID = other.gameObject.name,
+                    Type = EHitType.CollisionStay,
+                    Pos = gameObject.transform.position,
+                    Time = _timeElapsed
+                });
+            }
+        }
     }
 
     private void OnCollisionExit2D(Collision2D other)
@@ -71,7 +90,7 @@ public class Recorder : MonoBehaviour
     
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("TriggerEnter " + other.gameObject.name);
+        // Debug.Log("TriggerEnter " + other.gameObject.name);
         var identifier = other.gameObject.GetComponent<IdentifierComp>();
         if(identifier != null && identifier.Type == EFrameType.Outlet)
         {
@@ -93,14 +112,15 @@ public class Recorder : MonoBehaviour
         _data.Bumper2HitCount = _data.GetCollisionCount(EFrameType.Bumper, 2);
         _data.Bumper3HitCount = _data.GetCollisionCount(EFrameType.Bumper, 3);
         Log($"OnDestroy, RealRunDuration {_data.RealRunDuration}");
-        PathDataManager.AddData(1, _data);
+        PathDataManager.AddData(_data);
+        Spawner.ConcurrentBall--;
         // var json = JsonUtility.ToJson(_data);
         // Debug.Log($"{json}");
     }
 
     private void Log(string s)
     {
-        Debug.Log(s);
+        // Debug.Log(s);
     }
 }
 

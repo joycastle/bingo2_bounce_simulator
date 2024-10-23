@@ -19,10 +19,10 @@ public class Ball : MonoBehaviour
     
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("TriggerEnter " + other.gameObject.name);
+        // Debug.Log("TriggerEnter " + other.gameObject.name);
         if (other.gameObject.name.Contains("CollectionZone"))
         {
-            Debug.Log("EnterZone " + other.gameObject.name);
+            // Debug.Log("EnterZone " + other.gameObject.name);
             Destroy(gameObject);
         }
     }
