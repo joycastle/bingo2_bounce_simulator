@@ -48,32 +48,32 @@ public class Recorder : MonoBehaviour
     private void OnCollisionStay2D(Collision2D other)
     {
         Log($"OnCollisionStay2D with {other.gameObject.name}, HitPos {gameObject.transform.position}");
-        // _data.PathPoints.Add(new HitPointData()
+        _data.PathPoints.Add(new HitPointData()
+        {
+            ID = PathDataManager.GetIdentifier(other.gameObject),
+            Type = EHitType.CollisionStay,
+            Pos = gameObject.transform.position,
+            Time = _timeElapsed
+        });
+        // if (_data.PathPoints.Count <= 0)
         // {
-        //     ID = PathDataManager.GetIdentifier(other.gameObject),
-        //     Type = EHitType.CollisionStay,
-        //     Pos = gameObject.transform.position,
-        //     Time = _timeElapsed
-        // });
-        if (_data.PathPoints.Count <= 0)
-        {
-            Debug.LogError($"OnCollisionStay {other.gameObject.name}, HitPos {gameObject.transform.position} PathPoints is empty");
-        }
-        else
-        {
-            var lastData = _data.PathPoints.Last();
-            //stay状态只记录一个，减少存档大小
-            if (lastData.ID != other.gameObject.name)
-            {
-                _data.PathPoints.Add(new HitPointData()
-                {
-                    ID = other.gameObject.name,
-                    Type = EHitType.CollisionStay,
-                    Pos = gameObject.transform.position,
-                    Time = _timeElapsed
-                });
-            }
-        }
+        //     Debug.LogError($"OnCollisionStay {other.gameObject.name}, HitPos {gameObject.transform.position} PathPoints is empty");
+        // }
+        // else
+        // {
+        //     var lastData = _data.PathPoints.Last();
+        //     //stay状态只记录一个，减少存档大小
+        //     if (lastData.ID != other.gameObject.name)
+        //     {
+        //         _data.PathPoints.Add(new HitPointData()
+        //         {
+        //             ID = other.gameObject.name,
+        //             Type = EHitType.CollisionStay,
+        //             Pos = gameObject.transform.position,
+        //             Time = _timeElapsed
+        //         });
+        //     }
+        // }
     }
 
     private void OnCollisionExit2D(Collision2D other)

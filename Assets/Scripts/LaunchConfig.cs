@@ -10,14 +10,11 @@ public class LaunchConfig : ScriptableObject
     public EMode Mode;
     [ShowIf("IsRecordOrNormalMode")]
     public float XInitSpeed = 0f;
-    [ShowIf("IsRecordOrNormalMode")]
-    [Header("出球入口Id，决定球的初始位置，从左往右，从1开始")]
+    [ShowIf("IsRecordOrNormalMode"), Header("出球入口Id，决定球的初始位置，从左往右，从1开始")]
     public int InletId = 1;
-    [ShowIf("IsRecordOrNormalMode")]
-    [BoxGroup("指定出球参数"), Header("球的x坐标的偏移量")]
+    [ShowIf("IsRecordOrNormalMode"), BoxGroup("指定出球参数"), Header("球的x坐标的偏移量")]
     public float XOffset = 0f;
-    [ShowIf("IsRecordOrNormalMode")]
-    [BoxGroup("指定出球参数"), Header("球的y坐标的偏移量")]
+    [ShowIf("IsRecordOrNormalMode"), BoxGroup("指定出球参数"), Header("球的y坐标的偏移量")]
     public float YOffset = 0f;
     [ShowIf("IsRecordOrNormalMode"), BoxGroup("随机出球参数"), Header("球的x坐标偏移的随机范围（均匀随机）")]
     public Vector2 XOffsetRandomRange = new Vector2(-1, 1);

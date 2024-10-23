@@ -56,6 +56,11 @@ namespace DefaultNamespace
         public Vector2 Pos;
         //碰撞发生的时间
         public float Time;
+
+        public override string ToString()
+        {
+            return $"HitWith@{ID}_{Type}";
+        }
     }
     
     public class PathDataManager
@@ -95,8 +100,20 @@ namespace DefaultNamespace
         {
             return $"{type}#{id}";
         }
-        
+
         public static void AddData(PathData data)
+        {
+            if (inBatchMode)
+            {
+                AddDataBatchMode(data);
+            }
+            else
+            {
+                AddDataSimpleMode(data);
+            }
+        }
+
+        private static void AddDataBatchMode(PathData data)
         {
             // var id = GetNextRecordId();
             remainCount--;
@@ -108,15 +125,23 @@ namespace DefaultNamespace
             dataQueue.Enqueue(JsonMapper.ToJson(data));
         }
 
+        private static void AddDataSimpleMode(PathData data)
+        {
+            var file = GetStoragePath("Replay");
+            File.WriteAllText(file, JsonMapper.ToJson(data));
+        }
+
         static ConcurrentQueue<string> dataQueue = new ConcurrentQueue<string>();
         static string filePath;
         static TaskCompletionSource<bool> tcs;
         static int remainCount = 0;
+        static bool inBatchMode = false;
 
         public static async void StartRecord(int inletId, Vector2 xRange, float initXVelocity, int count)
         {
             var fileName = $"@{inletId}_Range_{xRange.x}-{xRange.y}_Vx{initXVelocity}_Num{count}";
             filePath = GetStoragePath(fileName);
+            inBatchMode = true;
             remainCount = count;
             if (File.Exists(filePath))
             {
@@ -155,6 +180,7 @@ namespace DefaultNamespace
         {
             Debug.Log("StopRecord");
             tcs.SetResult(true);
+            inBatchMode = false;
         }
         
         public static PathData GetData(string fileName, int line)
