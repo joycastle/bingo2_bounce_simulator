@@ -48,32 +48,33 @@ public class Recorder : MonoBehaviour
     private void OnCollisionStay2D(Collision2D other)
     {
         Log($"OnCollisionStay2D with {PathDataManager.GetIdentifier(other.gameObject)}, HitPos {gameObject.transform.position}");
-        // _data.PathPoints.Add(new HitPointData()
+        _data.PathPoints.Add(new HitPointData()
+        {
+            ID = PathDataManager.GetIdentifier(other.gameObject),
+            Type = EHitType.CollisionStay,
+            Pos = gameObject.transform.position,
+            Time = _timeElapsed
+        });
+        // 与曲面碰撞时，stay点之间的连线并非直线，不能把直接删掉多个连续的stay点，除非做一个斜率的判断
+        // if (_data.PathPoints.Count <= 0)
         // {
-        //     ID = PathDataManager.GetIdentifier(other.gameObject),
-        //     Type = EHitType.CollisionStay,
-        //     Pos = gameObject.transform.position,
-        //     Time = _timeElapsed
-        // });
-        if (_data.PathPoints.Count <= 0)
-        {
-            Debug.LogError($"OnCollisionStay {PathDataManager.GetIdentifier(other.gameObject)}, HitPos {gameObject.transform.position} PathPoints is empty");
-        }
-        else
-        {
-            var lastData = _data.PathPoints.Last();
-            //stay状态只记录一个，减少存档大小
-            if (lastData.ID != PathDataManager.GetIdentifier(other.gameObject))
-            {
-                _data.PathPoints.Add(new HitPointData()
-                {
-                    ID = PathDataManager.GetIdentifier(other.gameObject),
-                    Type = EHitType.CollisionStay,
-                    Pos = gameObject.transform.position,
-                    Time = _timeElapsed
-                });
-            }
-        }
+        //     Debug.LogError($"OnCollisionStay {PathDataManager.GetIdentifier(other.gameObject)}, HitPos {gameObject.transform.position} PathPoints is empty");
+        // }
+        // else
+        // {
+        //     var lastData = _data.PathPoints.Last();
+        //     //stay状态只记录一个，减少存档大小
+        //     if (lastData.ID != PathDataManager.GetIdentifier(other.gameObject) || lastData.Type != EHitType.CollisionStay)
+        //     {
+        //         _data.PathPoints.Add(new HitPointData()
+        //         {
+        //             ID = PathDataManager.GetIdentifier(other.gameObject),
+        //             Type = EHitType.CollisionStay,
+        //             Pos = gameObject.transform.position,
+        //             Time = _timeElapsed
+        //         });
+        //     }
+        // }
     }
 
     private void OnCollisionExit2D(Collision2D other)

@@ -9,7 +9,7 @@ namespace DefaultNamespace
     public class Replayer : MonoBehaviour
     {
         private PathData _data;
-#if UNITY_EDITOR
+#if BOUNCE_DEBUG
         private float _totalTime;
         private List<float> simulationTime = new ();
         private List<float> diffTime = new ();
@@ -22,12 +22,14 @@ namespace DefaultNamespace
             transform.position = _data.PathPoints[0].Pos;
             StartCoroutine(MoveLoop());
         }
-        
+
+#if BOUNCE_DEBUG        
         private void Update()
         {
             _totalTime += Time.deltaTime;
         }
-
+#endif
+        
         IEnumerator MoveLoop()
         {
             for (int i = 0; i < _data.PathPoints.Count - 1; i++)
@@ -35,7 +37,7 @@ namespace DefaultNamespace
                 
                 var currentData = _data.PathPoints[i];
                 var nextData = _data.PathPoints[i + 1];
-#if UNITY_EDITOR
+#if BOUNCE_DEBUG
                 Debug.Log($"OnHitPoint#{i}-{currentData.Type}-{currentData.ID}, SimulationTime {_totalTime}, ExpectTime {currentData.Time}, Diff {_totalTime - currentData.Time}");
                 simulationTime.Add(_totalTime);
                 diffTime.Add(_totalTime - currentData.Time);
@@ -57,6 +59,20 @@ namespace DefaultNamespace
                     positionEvaluate = CalculateLinearMoveFunction(currentData.Pos, nextData.Pos,
                         nextData.Time - currentData.Time);
                 }
+                else if ((currentData.Type == EHitType.CollisionStay && nextData.Type == EHitType.CollisionEnter) || //可能物体1的stay和物体2的enter连着
+                         (currentData.Type == EHitType.CollisionExit && nextData.Type == EHitType.CollisionStay)) //导致物体2的stay和物体1的exit连着)
+                {
+                    if (currentData.ID != nextData.ID)
+                    {
+                        positionEvaluate = CalculateLinearMoveFunction(currentData.Pos, nextData.Pos,
+                            nextData.Time - currentData.Time);
+                    }
+                    else
+                    {
+                        Debug.LogError($"CollisionWithSameBody State Order Error {i}: {currentData.ToString()} to {nextData.ToString()}");
+                        yield break;
+                    }
+                }
                 else
                 {
                     Debug.LogError($"Unsupport Move at Index {i}: {currentData.ToString()} to {nextData.ToString()}");
@@ -67,7 +83,7 @@ namespace DefaultNamespace
             }
 
             // TODOJOE send finishEvent
-#if UNITY_EDITOR
+#if BOUNCE_DEBUG
             // Debug.LogError($"SimulationTime {string.Join(",", simulationTime)}");
             // Debug.LogError($"DiffTime {string.Join(",", diffTime)}");
             // Debug.LogError($"PointType {string.Join(",", pointType)}");
@@ -92,8 +108,8 @@ namespace DefaultNamespace
             while (timeElapsed < positionEvaluate.GetTime())
             {
                 transform.position = positionEvaluate.GetPosition(timeElapsed);
-                timeElapsed += Time.deltaTime;
                 yield return null;
+                timeElapsed += Time.deltaTime;
             }
         }
 
@@ -119,8 +135,8 @@ namespace DefaultNamespace
             var a = Physics.gravity.y * Mathf.Sin(theta);
             var distance = Vector2.Distance(startPos, endPos);
             var v0 = distance / time - 0.5f * a * time;
-            var v_x0 = v0 * Mathf.Cos(theta);
-            var v_y0 = v0 * Mathf.Sin(theta);
+            var v_x0 = endPos.x > startPos.x ? Mathf.Abs(v0 * Mathf.Cos(theta)) : -Mathf.Abs(v0 * Mathf.Cos(theta));
+            var v_y0 = endPos.y > startPos.y ? Mathf.Abs(v0 * Mathf.Sin(theta)) : -Mathf.Abs(v0 * Mathf.Sin(theta));
             return new LinearEvaluate(startPos, endPos, new Vector2(v_x0, v_y0), time);
         }
 
