@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector.Editor.GettingStarted;
 using UnityEngine;
 
@@ -9,8 +10,8 @@ namespace DefaultNamespace
     public class Replayer : MonoBehaviour
     {
         private PathData _data;
-#if BOUNCE_DEBUG
         private float _totalTime;
+#if BOUNCE_DEBUG
         private List<float> simulationTime = new ();
         private List<float> diffTime = new ();
         private List<int> pointType = new ();
@@ -21,64 +22,31 @@ namespace DefaultNamespace
             _data = data;
             transform.position = _data.PathPoints[0].Pos;
             StartCoroutine(MoveLoop());
+            // GenAllPositionEvaluate();
         }
 
-#if BOUNCE_DEBUG        
         private void Update()
         {
             _totalTime += Time.deltaTime;
+            // var currentPositionEvaluate = _dictionary.LastOrDefault(x => x.Key <= _totalTime).Value;
+            // if (currentPositionEvaluate == null)
+            // {
+            //     Debug.LogError($"No PositionEvaluate Found for {_totalTime}");
+            //     return;
+            // }
+            // else
+            // {
+            //     transform.position = currentPositionEvaluate.GetPosition(_totalTime);
+            // }
         }
-#endif
         
         IEnumerator MoveLoop()
         {
             for (int i = 0; i < _data.PathPoints.Count - 1; i++)
             {
-                
                 var currentData = _data.PathPoints[i];
                 var nextData = _data.PathPoints[i + 1];
-#if BOUNCE_DEBUG
-                Debug.Log($"OnHitPoint#{i}-{currentData.Type}-{currentData.ID}, SimulationTime {_totalTime}, ExpectTime {currentData.Time}, Diff {_totalTime - currentData.Time}");
-                simulationTime.Add(_totalTime);
-                diffTime.Add(_totalTime - currentData.Time);
-                pointType.Add((int) currentData.Type);
-                pointDesc.Add($"{i}.{currentData.ID}");
-#endif
-                HandleCollisionEvent(currentData);
-                PositionEvaluate positionEvaluate;
-                if ((currentData.Type == EHitType.CollisionExit && nextData.Type == EHitType.CollisionEnter))
-                {
-                    positionEvaluate = CalculateParabolaMoveFunction(currentData.Pos, nextData.Pos,
-                        nextData.Time - currentData.Time);
-                }
-                else if((currentData.Type == EHitType.CollisionEnter && nextData.Type == EHitType.CollisionStay) || 
-                        (currentData.Type == EHitType.CollisionEnter && nextData.Type == EHitType.CollisionExit) ||
-                        (currentData.Type == EHitType.CollisionStay && nextData.Type == EHitType.CollisionStay) ||
-                        (currentData.Type == EHitType.CollisionStay && nextData.Type == EHitType.CollisionExit))
-                {
-                    positionEvaluate = CalculateLinearMoveFunction(currentData.Pos, nextData.Pos,
-                        nextData.Time - currentData.Time);
-                }
-                else if ((currentData.Type == EHitType.CollisionStay && nextData.Type == EHitType.CollisionEnter) || //可能物体1的stay和物体2的enter连着
-                         (currentData.Type == EHitType.CollisionExit && nextData.Type == EHitType.CollisionStay)) //导致物体2的stay和物体1的exit连着)
-                {
-                    if (currentData.ID != nextData.ID)
-                    {
-                        positionEvaluate = CalculateLinearMoveFunction(currentData.Pos, nextData.Pos,
-                            nextData.Time - currentData.Time);
-                    }
-                    else
-                    {
-                        Debug.LogError($"CollisionWithSameBody State Order Error {i}: {currentData.ToString()} to {nextData.ToString()}");
-                        yield break;
-                    }
-                }
-                else
-                {
-                    Debug.LogError($"Unsupport Move at Index {i}: {currentData.ToString()} to {nextData.ToString()}");
-                    yield break;
-                }
-                
+                var positionEvaluate = GetPositionEvaluateBetween(currentData, nextData, i);
                 yield return DoMove(positionEvaluate);
             }
 
@@ -90,6 +58,65 @@ namespace DefaultNamespace
             Debug.LogError($"[{string.Join(",", simulationTime)}];[{string.Join(",", diffTime)}];[{string.Join(",", pointType)}];[{string.Join(",", pointDesc)}]");
 #endif
             Destroy(gameObject);
+        }
+        
+        SortedDictionary<float, PositionEvaluate> _dictionary = new ();
+        void GenAllPositionEvaluate()
+        {
+            for (int i = 0; i < _data.PathPoints.Count - 1; i++)
+            {
+                var currentData = _data.PathPoints[i];
+                var nextData = _data.PathPoints[i + 1];
+                var positionEvaluate = GetPositionEvaluateBetween(currentData, nextData, i);
+                _dictionary[currentData.Time] = positionEvaluate;
+            }
+        }
+
+        PositionEvaluate GetPositionEvaluateBetween(HitPointData currentData, HitPointData nextData, int i)
+        {
+#if BOUNCE_DEBUG
+            Debug.Log($"OnHitPoint#{i}-{currentData.Type}-{currentData.ID}, SimulationTime {_totalTime}, ExpectTime {currentData.Time}, Diff {_totalTime - currentData.Time}");
+            simulationTime.Add(_totalTime);
+            diffTime.Add(_totalTime - currentData.Time);
+            pointType.Add((int) currentData.Type);
+            pointDesc.Add($"{i}.{currentData.ID}");
+#endif
+            HandleCollisionEvent(currentData);
+            PositionEvaluate positionEvaluate;
+            if ((currentData.Type == EHitType.CollisionExit && nextData.Type == EHitType.CollisionEnter))
+            {
+                positionEvaluate = CalculateParabolaMoveFunction(currentData.Pos, nextData.Pos,
+                    nextData.Time - currentData.Time);
+            }
+            else if((currentData.Type == EHitType.CollisionEnter && nextData.Type == EHitType.CollisionStay) || 
+                    (currentData.Type == EHitType.CollisionEnter && nextData.Type == EHitType.CollisionExit) ||
+                    (currentData.Type == EHitType.CollisionStay && nextData.Type == EHitType.CollisionStay) ||
+                    (currentData.Type == EHitType.CollisionStay && nextData.Type == EHitType.CollisionExit))
+            {
+                positionEvaluate = CalculateLinearMoveFunction(currentData.Pos, nextData.Pos,
+                    nextData.Time - currentData.Time);
+            }
+            else if ((currentData.Type == EHitType.CollisionStay && nextData.Type == EHitType.CollisionEnter) || //可能物体1的stay和物体2的enter连着
+                     (currentData.Type == EHitType.CollisionExit && nextData.Type == EHitType.CollisionStay)) //导致物体2的stay和物体1的exit连着)
+            {
+                if (currentData.ID != nextData.ID)
+                {
+                    positionEvaluate = CalculateLinearMoveFunction(currentData.Pos, nextData.Pos,
+                        nextData.Time - currentData.Time);
+                }
+                else
+                {
+                    Debug.LogError($"CollisionWithSameBody State Order Error {i}: {currentData.ToString()} to {nextData.ToString()}");
+                    return null;
+                }
+            }
+            else
+            {
+                Debug.LogError($"Unsupport Move at Index {i}: {currentData.ToString()} to {nextData.ToString()}");
+                return null;
+            }
+
+            return positionEvaluate;
         }
 
         void HandleCollisionEvent(HitPointData data)
@@ -208,7 +235,6 @@ namespace DefaultNamespace
         
         public class LinearEvaluate : PositionEvaluate
         {
-            private Vector2 _simulatedError;
             public LinearEvaluate(Vector2 startPos, Vector2 endPos, Vector2 startVelocity, float duration) : base(startPos, endPos, startVelocity, duration)
             {
                 
