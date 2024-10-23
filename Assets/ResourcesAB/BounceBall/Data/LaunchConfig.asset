@@ -15,10 +15,10 @@ MonoBehaviour:
   Mode: 1
   XInitSpeed: 0
   InletId: 3
-  XOffset: 0.123675
+  XOffset: 2.78
   YOffset: 0.3324454
   XOffsetRandomRange: {x: -2, y: 2}
-  Count: 1000
+  Count: 2000
   MaxConcurrentBall: 500
-  ReplayFileName: Replay
+  ReplayFileName: ReplayConcise
   ReplayLineNum: 1
