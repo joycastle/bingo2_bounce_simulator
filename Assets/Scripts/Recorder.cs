@@ -35,7 +35,7 @@ public class Recorder : MonoBehaviour
     
     private void OnCollisionEnter2D(Collision2D other)
     {
-        Log($"OnCollisionEnter2D with {other.gameObject.name}, HitPos {gameObject.transform.position}");
+        Log($"OnCollisionEnter2D with {PathDataManager.GetIdentifier(other.gameObject)}, HitPos {gameObject.transform.position}");
         _data.PathPoints.Add(new HitPointData()
         {
             ID = PathDataManager.GetIdentifier(other.gameObject),
@@ -47,38 +47,38 @@ public class Recorder : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D other)
     {
-        Log($"OnCollisionStay2D with {other.gameObject.name}, HitPos {gameObject.transform.position}");
-        _data.PathPoints.Add(new HitPointData()
+        Log($"OnCollisionStay2D with {PathDataManager.GetIdentifier(other.gameObject)}, HitPos {gameObject.transform.position}");
+        // _data.PathPoints.Add(new HitPointData()
+        // {
+        //     ID = PathDataManager.GetIdentifier(other.gameObject),
+        //     Type = EHitType.CollisionStay,
+        //     Pos = gameObject.transform.position,
+        //     Time = _timeElapsed
+        // });
+        if (_data.PathPoints.Count <= 0)
         {
-            ID = PathDataManager.GetIdentifier(other.gameObject),
-            Type = EHitType.CollisionStay,
-            Pos = gameObject.transform.position,
-            Time = _timeElapsed
-        });
-        // if (_data.PathPoints.Count <= 0)
-        // {
-        //     Debug.LogError($"OnCollisionStay {other.gameObject.name}, HitPos {gameObject.transform.position} PathPoints is empty");
-        // }
-        // else
-        // {
-        //     var lastData = _data.PathPoints.Last();
-        //     //stay状态只记录一个，减少存档大小
-        //     if (lastData.ID != other.gameObject.name)
-        //     {
-        //         _data.PathPoints.Add(new HitPointData()
-        //         {
-        //             ID = other.gameObject.name,
-        //             Type = EHitType.CollisionStay,
-        //             Pos = gameObject.transform.position,
-        //             Time = _timeElapsed
-        //         });
-        //     }
-        // }
+            Debug.LogError($"OnCollisionStay {PathDataManager.GetIdentifier(other.gameObject)}, HitPos {gameObject.transform.position} PathPoints is empty");
+        }
+        else
+        {
+            var lastData = _data.PathPoints.Last();
+            //stay状态只记录一个，减少存档大小
+            if (lastData.ID != PathDataManager.GetIdentifier(other.gameObject))
+            {
+                _data.PathPoints.Add(new HitPointData()
+                {
+                    ID = PathDataManager.GetIdentifier(other.gameObject),
+                    Type = EHitType.CollisionStay,
+                    Pos = gameObject.transform.position,
+                    Time = _timeElapsed
+                });
+            }
+        }
     }
 
     private void OnCollisionExit2D(Collision2D other)
     {
-        Log($"OnCollisionExit2D with {other.gameObject.name}, HitPos {gameObject.transform.position}");
+        Log($"OnCollisionExit2D with {PathDataManager.GetIdentifier(other.gameObject)}, HitPos {gameObject.transform.position}");
         _data.PathPoints.Add(new HitPointData()
         {
             ID = PathDataManager.GetIdentifier(other.gameObject),
@@ -90,7 +90,7 @@ public class Recorder : MonoBehaviour
     
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Debug.Log("TriggerEnter " + other.gameObject.name);
+        // Debug.Log("TriggerEnter " + PathDataManager.GetIdentifier(other.gameObject));
         var identifier = other.gameObject.GetComponent<IdentifierComp>();
         if(identifier != null && identifier.Type == EFrameType.Outlet)
         {

@@ -2,8 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DefaultNamespace;
 using LitJson;
+using Unity.Entities.UniversalDelegates;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public class Tools
@@ -87,9 +90,9 @@ public class Tools
             clone.transform.position = mirroredPosition;
 
             // 反转复制对象的X轴缩放，以实现镜像效果
-            Vector3 scale = clone.transform.localScale;
-            scale.x = -scale.x;
-            clone.transform.localScale = scale;
+            // Vector3 scale = clone.transform.localScale;
+            // scale.x = -scale.x;
+            // clone.transform.localScale = scale;
 
             // 如果有需要，也可以反转物体的旋转（不一定需要，取决于具体情况）
             // Vector3 rotation = clone.transform.eulerAngles;
@@ -122,71 +125,51 @@ public class Tools
             clone.transform.SetParent(toParent.transform);
         }
     }
-    
-    // public class PathData
-    // {
-    //     public float RealRunDuration { get; set; }
-    //     public List<HitPointData> PathPoints = new List<HitPointData>();
-    // }
-    //
-    // public enum EHitType
-    // {
-    //     CollisionEnter,
-    //     CollisionStay,
-    //     CollisionExit
-    // }
-    //
-    // public struct HitPointData
-    // {
-    //     public string HitID;
-    //     public EHitType HitType;
-    //     public Vector3 Position;
-    //     public float TimeElapsed;
-    //     // public Vector3 InVelocity;
-    //     // public Vector3 OutVelocity;
-    // }
-    //
-    // [MenuItem("Tools/TestJson")]
-    // public static void TestJson()
-    // {
-    //     // Register();
-    //     // JsonMapper.RegisterExporter<float>((obj, writer) => writer.Write(Convert.ToDouble(obj)));
-    //     // JsonMapper.RegisterImporter<double, float>(input => Convert.ToSingle(input));
-    //     var pathData = new PathData();
-    //     pathData.PathPoints = new List<HitPointData>();
-    //     pathData.RealRunDuration = 1f;
-    //     pathData.PathPoints.Add(new HitPointData()
-    //     {
-    //         HitID = "",
-    //         HitType = EHitType.CollisionExit,
-    //         Position = Vector3.zero,
-    //         TimeElapsed = 1f,
-    //     });
-    //     pathData.PathPoints.Add(new HitPointData()
-    //     {
-    //         HitID = "",
-    //         HitType = EHitType.CollisionEnter,
-    //         Position = Vector3.zero,
-    //         TimeElapsed = 2f,
-    //     });
-    //     pathData.PathPoints.Add(new HitPointData()
-    //     {
-    //         HitID = "",
-    //         HitType = EHitType.CollisionStay,
-    //         Position = Vector3.zero,
-    //         TimeElapsed = 3f,
-    //     });
-    //     pathData.PathPoints.Add(new HitPointData()
-    //     {
-    //         HitID = "",
-    //         HitType = EHitType.CollisionExit,
-    //         Position = Vector3.zero,
-    //         TimeElapsed = 4f,
-    //     });
-    //     var json = JsonMapper.ToJson(pathData);
-    //     Debug.Log(json);
-    //     
-    // }
+
+    [MenuItem("Tools/SetId")]
+    public static void SetIdentifiers()
+    {
+        Dictionary<EFrameType, List<IdentifierComp>> dictionary = new();
+        var identifierComponents = GameObject.Find("BounceBall").transform.GetComponentsInChildren<IdentifierComp>();
+        foreach (var comp in identifierComponents)
+        {
+            if (!dictionary.ContainsKey(comp.Type))
+            {
+                dictionary[comp.Type] = new List<IdentifierComp>();
+            }
+            dictionary[comp.Type].Add(comp);
+        }
+
+        foreach (var kvp in dictionary)
+        {
+            var certainType = kvp.Key;
+            var certainTypeComps = kvp.Value;
+            certainTypeComps = certainTypeComps.OrderBy(comp => comp.transform.position.x).ToList();
+            certainTypeComps = certainTypeComps.OrderBy(comp => -comp.transform.position.y).ToList();
+            for (int i = 0; i < certainTypeComps.Count; i++)
+            {
+                certainTypeComps[i].ID = i + 1;
+#if BOUNCE_DEBUG
+                certainTypeComps[i].SetText(certainTypeComps[i].ID.ToString());
+#endif
+                EditorUtility.SetDirty(certainTypeComps[i]);
+            }
+        }
+
+        // 标记场景为已修改
+        var scene = EditorSceneManager.GetActiveScene();
+        EditorSceneManager.MarkSceneDirty(scene);
+
+        // 保存场景
+        if (EditorSceneManager.SaveScene(scene))
+        {
+            Debug.Log("Scene saved successfully.");
+        }
+        else
+        {
+            Debug.LogError("Failed to save scene.");
+        }
+    }
 }
 
 
