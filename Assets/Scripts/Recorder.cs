@@ -8,6 +8,7 @@ public class Recorder : MonoBehaviour
 {
     private PathData _data;
     private float _timeElapsed;
+    private const float MaxWaitTime = 30f;
 
     public void RecordInParam(int inletId, float initXSpeed)
     {
@@ -32,6 +33,11 @@ public class Recorder : MonoBehaviour
     void Update()
     {
         _timeElapsed += Time.deltaTime;
+        if(_timeElapsed > MaxWaitTime)
+        {
+            Debug.LogError("Recorder Time out, destroy");
+            Destroy(gameObject);
+        }
     }
     
     private void OnCollisionEnter2D(Collision2D other)
