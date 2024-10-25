@@ -17,12 +17,30 @@ namespace DefaultNamespace
         private List<int> pointType = new ();
         private List<string> pointDesc = new ();
 #endif
+        PositionTranslate _positionTranslate;
+        private void Start()
+        {
+            _positionTranslate = gameObject.GetComponent<PositionTranslate>();
+        }
+
         public void Init(PathData data)
         {
             _data = data;
-            transform.position = _data.PathPoints[0].Pos;
+            SetPosition(_data.PathPoints[0].Pos);
             StartCoroutine(MoveLoop());
             // GenAllPositionEvaluate();
+        }
+        
+        void SetPosition(Vector2 recordPos)
+        {
+            if (_positionTranslate != null)
+            {
+                transform.position = _positionTranslate.GetModifiedPos(recordPos);
+            }
+            else
+            {
+                transform.position = recordPos;
+            }
         }
 
         private void Update()
@@ -36,7 +54,7 @@ namespace DefaultNamespace
             // }
             // else
             // {
-            //     transform.position = currentPositionEvaluate.GetPosition(_totalTime);
+            //     SetPosition(currentPositionEvaluate.GetPosition(_totalTime));
             // }
         }
         
@@ -134,7 +152,7 @@ namespace DefaultNamespace
             var timeElapsed = 0f;
             while (timeElapsed < positionEvaluate.GetTime())
             {
-                transform.position = positionEvaluate.GetPosition(timeElapsed);
+                SetPosition(positionEvaluate.GetPosition(timeElapsed));
                 yield return null;
                 timeElapsed += Time.deltaTime;
             }

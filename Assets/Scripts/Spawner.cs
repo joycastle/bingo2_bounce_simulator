@@ -17,6 +17,7 @@ public class Spawner : MonoBehaviour
     public GameObject BallInstance;
     public GameObject RecordBallInstance;
     public GameObject ReplayBallInstance;
+    public GameObject ReplayUIBallInstance;
     public LaunchConfig Config;
     public EMode Mode => Config.Mode;
     
@@ -115,6 +116,8 @@ public class Spawner : MonoBehaviour
                 return RecordBallInstance;
             case EMode.Replay:
                 return ReplayBallInstance;
+            case EMode.ReplayUI:
+                return ReplayUIBallInstance;
             default:
                 return BallInstance;
         }
@@ -124,6 +127,12 @@ public class Spawner : MonoBehaviour
     {
         if (mode == EMode.Replay)
         {
+            var replayer = go.GetComponent<Replayer>();
+            replayer.Init(PathDataManager.GetData(Config.ReplayFileName, Config.ReplayLineNum));
+        }
+        else if(mode == EMode.ReplayUI)
+        {
+            go.transform.SetParent(GameObject.Find("Canvas").transform);
             var replayer = go.GetComponent<Replayer>();
             replayer.Init(PathDataManager.GetData(Config.ReplayFileName, Config.ReplayLineNum));
         }
@@ -147,7 +156,8 @@ public enum EMode
 {
     Normal,
     Record,
-    Replay
+    Replay,
+    ReplayUI,
 }
 
 public static class LitJsonRegister

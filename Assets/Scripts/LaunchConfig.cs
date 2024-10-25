@@ -36,7 +36,7 @@ public class LaunchConfig : ScriptableObject
 
     public bool IsReplayMode()
     {
-        return Mode == EMode.Replay;
+        return Mode == EMode.Replay || Mode == EMode.ReplayUI;
     }
     
     public bool IsRecordOrNormalMode()

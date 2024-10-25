@@ -18,7 +18,7 @@ MonoBehaviour:
   XOffset: 2.78
   YOffset: 0.3324454
   XOffsetRandomRange: {x: -2, y: 2}
-  Count: 2000
-  MaxConcurrentBall: 500
-  ReplayFileName: ReplayConcise
-  ReplayLineNum: 1
+  Count: 1000
+  MaxConcurrentBall: 100
+  ReplayFileName: '@3_Range_-2-2_Vx0_Num10000'
+  ReplayLineNum: 1256
