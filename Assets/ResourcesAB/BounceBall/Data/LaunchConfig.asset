@@ -12,13 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3def0ebf6a1fe4b06b502e397e5dc321, type: 3}
   m_Name: LaunchConfig
   m_EditorClassIdentifier: 
-  Mode: 3
+  Mode: 2
   XInitSpeed: 0
   InletId: 3
-  XOffset: 2.78
+  XOffset: 2.7
   YOffset: 0.3324454
+  RecordFromFileName: '@3_Range_-2-2_Vx0_Num1000'
+  RecordLineNum: 100
   XOffsetRandomRange: {x: -2, y: 2}
   Count: 1000
-  MaxConcurrentBall: 100
+  MaxConcurrentBall: 200
   ReplayFileName: '@3_Range_-2-2_Vx0_Num1000'
-  ReplayLineNum: 123
+  ReplayLineNum: 100

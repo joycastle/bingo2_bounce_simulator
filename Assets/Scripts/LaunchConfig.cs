@@ -16,6 +16,10 @@ public class LaunchConfig : ScriptableObject
     public float XOffset = 0f;
     [ShowIf("IsRecordOrNormalMode"), BoxGroup("指定出球参数"), Header("球的y坐标的偏移量")]
     public float YOffset = 0f;
+    [ShowIf("IsRecordOrNormalMode"), BoxGroup("指定出球参数"), Header("从json文件获取")]
+    public string RecordFromFileName = "replay";
+    [ShowIf("IsRecordOrNormalMode"), BoxGroup("指定出球参数"), Header("该文件的第几行数据")]
+    public int RecordLineNum = 0;
     [ShowIf("IsRecordOrNormalMode"), BoxGroup("随机出球参数"), Header("球的x坐标偏移的随机范围（均匀随机）")]
     public Vector2 XOffsetRandomRange = new Vector2(-1, 1);
     [ShowIf("IsRecordOrNormalMode"), BoxGroup("随机出球参数"), Header("出球数量")]
