@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using DefaultNamespace;
+using GameLib.Main.Modules.Campaigns.BounceBall.View;
 using Sirenix.OdinInspector;
 using UnityEngine;
 

@@ -8,7 +8,7 @@ using LitJson;
 using NUnit.Framework.Constraints;
 using UnityEngine;
 
-namespace DefaultNamespace
+namespace GameLib.Main.Modules.Campaigns.BounceBall.View
 {
     public class PathData
     {

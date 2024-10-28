@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace DefaultNamespace
+namespace GameLib.Main.Modules.Campaigns.BounceBall.View
 {
     public enum EFrameType
     {

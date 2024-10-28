@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DefaultNamespace;
+using GameLib.Main.Modules.Campaigns.BounceBall.View;
 using LitJson;
 using Unity.Entities.UniversalDelegates;
 using UnityEditor;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class PositionTranslate : MonoBehaviour
+public class BounceBallPositionTranslate : MonoBehaviour
 {
     public GameObject go;
     public Vector2 ScreenSize = new Vector2(1080, 1920);
@@ -14,7 +14,7 @@ public class PositionTranslate : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        CalculatePositionTranslate(out _delat, out _scale);
+        CalculatePositionTranslate();
     }
 
     // protected Vector2 ScreenLeftDownWorldPosition;
@@ -35,13 +35,13 @@ public class PositionTranslate : MonoBehaviour
 
     private Vector2 _delat;
     private float _scale;
-    void CalculatePositionTranslate(out Vector2 delta, out float scale)
+    public void CalculatePositionTranslate()
     {
-        scale = 96;
+        _scale = 96;
         // var oriPosition = Vector2.zero;
         // var newPos = GetScreenCenterWorldPos();
         // delta = newPos / scale - oriPosition;
-        delta = Vector2.zero;
+        _delat = Vector2.zero;
     }
 
     Vector2 GetScreenCenterWorldPos()

@@ -1,31 +1,34 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Sirenix.OdinInspector.Editor.GettingStarted;
 using UnityEngine;
+using System.Collections.Generic;
+#if !BOUNCE_SIMULATOR
+using Core.Utils;
+using Game.ILRuntime;
+using GameLib.Main.Modules.Campaigns.BounceBall.Model;
+#endif
 
-namespace DefaultNamespace
+namespace GameLib.Main.Modules.Campaigns.BounceBall.View
 {
+#if !BOUNCE_SIMULATOR
+    public class BounceBallReplayComp : ScriptMono
+#else
     public class Replayer : MonoBehaviour
+#endif
     {
         private PathData _data;
         private float _totalTime;
+        private BounceBallPositionTranslate _positionTranslate = new BounceBallPositionTranslate();
 #if BOUNCE_DEBUG
         private List<float> simulationTime = new ();
         private List<float> diffTime = new ();
         private List<int> pointType = new ();
         private List<string> pointDesc = new ();
 #endif
-        PositionTranslate _positionTranslate;
-        private void Start()
-        {
-            _positionTranslate = gameObject.GetComponent<PositionTranslate>();
-        }
-
         public void Init(PathData data)
         {
             _data = data;
+            _positionTranslate.CalculatePositionTranslate();
             SetPosition(_data.PathPoints[0].GetPos());
             StartCoroutine(MoveLoop());
             // GenAllPositionEvaluate();
@@ -95,7 +98,7 @@ namespace DefaultNamespace
 #if BOUNCE_DEBUG
             Debug.Log($"OnHitPoint#{i}-{currentData.Type}-{currentData.ID}, SimulationTime {_totalTime}, ExpectTime {currentData.GetTime()}, Diff {_totalTime - currentData.GetTime()}");
             simulationTime.Add(_totalTime);
-            diffTime.Add((float) (_totalTime - currentData.GetTime()));
+            diffTime.Add(_totalTime - currentData.GetTime());
             pointType.Add((int) currentData.Type);
             pointDesc.Add($"{i}.{currentData.ID}");
 #endif
@@ -141,12 +144,12 @@ namespace DefaultNamespace
 
         void HandleCollisionEvent(HitPointData data)
         {
-            PathDataManager.FromIdentifier(data.ID, out var frameType, out var id); 
-            if(frameType == EFrameType.Bumper && data.Type == EHitType.CollisionEnter)
-            {
-                //TODOJOE sendEvent to UI
-                Debug.Log($"OnHitWith {frameType}#{id}");
-            }
+            // PathDataManager.FromIdentifier(data.ID, out var frameType, out var id); 
+            // if(frameType == EFrameType.Bumper && data.Type == EHitType.CollisionEnter)
+            // {
+            //     //TODOJOE sendEvent to UI
+            //     Debug.Log($"OnHitWith {frameType}#{id}");
+            // }
         }
 
         IEnumerator DoMove(PositionEvaluate positionEvaluate)
@@ -159,10 +162,19 @@ namespace DefaultNamespace
                 timeElapsed += Time.deltaTime;
             }
         }
+        
+        public static float GetGravity()
+        {
+#if BOUNCE_SIMULATOR
+            return Physics2D.gravity.y;
+#else
+            return -20f;
+#endif
+        }
 
         ParabolaEvaluate CalculateParabolaMoveFunction(Vector2 startPos, Vector2 endPos, float time)
         {
-            var v_y0 = (endPos.y - startPos.y) / time + 0.5f * Mathf.Abs(Physics2D.gravity.y * time);
+            var v_y0 = (endPos.y - startPos.y) / time + 0.5f * Mathf.Abs(GetGravity() * time);
             var v_x0 = (endPos.x - startPos.x) / time;
             return new ParabolaEvaluate(startPos, endPos, new Vector2(v_x0, v_y0), time);
         }
@@ -179,7 +191,7 @@ namespace DefaultNamespace
                 theta = Mathf.Atan((endPos.y - startPos.y) / (endPos.x - startPos.x));
             }
 
-            var a = Physics2D.gravity.y * Mathf.Sin(theta);
+            var a = GetGravity() * Mathf.Sin(theta);
             var distance = Vector2.Distance(startPos, endPos);
             var v0 = distance / time - 0.5f * a * time;
             var v_x0 = endPos.x > startPos.x ? Mathf.Abs(v0 * Mathf.Cos(theta)) : -Mathf.Abs(v0 * Mathf.Cos(theta));
@@ -242,7 +254,7 @@ namespace DefaultNamespace
 
             protected override Vector2 GetSimulatedPosition(float timeElapsed)
             {
-                var yOffset = _startVelocity.y * timeElapsed + 0.5f * Physics2D.gravity.y * timeElapsed * timeElapsed;
+                var yOffset = _startVelocity.y * timeElapsed + 0.5f * GetGravity() * timeElapsed * timeElapsed;
                 var xOffset = _startVelocity.x * timeElapsed;
                 return new Vector2(_startPosition.x + xOffset, _startPosition.y + yOffset);
             }
@@ -263,7 +275,7 @@ namespace DefaultNamespace
             protected override Vector2 GetSimulatedPosition(float timeElapsed)
             {
                 var theta = Mathf.Atan(_startVelocity.y / _startVelocity.x);
-                var a = Physics2D.gravity.y * Mathf.Sin(theta);
+                var a = GetGravity() * Mathf.Sin(theta);
                 var a_x = a * Mathf.Cos(theta);
                 var a_y = a * Mathf.Sin(theta);
                 var xOffset = _startVelocity.x * timeElapsed + 0.5f * a_x * timeElapsed * timeElapsed;
