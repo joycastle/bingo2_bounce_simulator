@@ -79,6 +79,11 @@ namespace DefaultNamespace
             return new Vector2((float)PosX, (float)PosY);
         }
 
+        public float GetTime()
+        {
+            return (float) Time;
+        }
+
         public override string ToString()
         {
             return $"HitWith@{ID}_{Type}";

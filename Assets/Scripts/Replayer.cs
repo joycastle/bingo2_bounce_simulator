@@ -86,16 +86,16 @@ namespace DefaultNamespace
         //         var currentData = _data.PathPoints[i];
         //         var nextData = _data.PathPoints[i + 1];
         //         var positionEvaluate = GetPositionEvaluateBetween(currentData, nextData, i);
-        //         _dictionary[currentData.Time] = positionEvaluate;
+        //         _dictionary[currentData.GetTime()] = positionEvaluate;
         //     }
         // }
 
         PositionEvaluate GetPositionEvaluateBetween(HitPointData currentData, HitPointData nextData, int i)
         {
 #if BOUNCE_DEBUG
-            Debug.Log($"OnHitPoint#{i}-{currentData.Type}-{currentData.ID}, SimulationTime {_totalTime}, ExpectTime {currentData.Time}, Diff {_totalTime - currentData.Time}");
+            Debug.Log($"OnHitPoint#{i}-{currentData.Type}-{currentData.ID}, SimulationTime {_totalTime}, ExpectTime {currentData.GetTime()}, Diff {_totalTime - currentData.GetTime()}");
             simulationTime.Add(_totalTime);
-            diffTime.Add(_totalTime - currentData.Time);
+            diffTime.Add((float) (_totalTime - currentData.GetTime()));
             pointType.Add((int) currentData.Type);
             pointDesc.Add($"{i}.{currentData.ID}");
 #endif
@@ -104,7 +104,7 @@ namespace DefaultNamespace
             if ((currentData.Type == EHitType.CollisionExit && nextData.Type == EHitType.CollisionEnter))
             {
                 positionEvaluate = CalculateParabolaMoveFunction(currentData.GetPos(), nextData.GetPos(),
-                    (float) (nextData.Time - currentData.Time));
+                    nextData.GetTime() - currentData.GetTime());
             }
             else if((currentData.Type == EHitType.CollisionEnter && nextData.Type == EHitType.CollisionStay) || 
                     (currentData.Type == EHitType.CollisionEnter && nextData.Type == EHitType.CollisionExit) ||
@@ -112,7 +112,7 @@ namespace DefaultNamespace
                     (currentData.Type == EHitType.CollisionStay && nextData.Type == EHitType.CollisionExit))
             {
                 positionEvaluate = CalculateLinearMoveFunction(currentData.GetPos(), nextData.GetPos(),
-                    (float) (nextData.Time - currentData.Time));
+                    nextData.GetTime() - currentData.GetTime());
             }
             else if ((currentData.Type == EHitType.CollisionStay && nextData.Type == EHitType.CollisionEnter) || //可能物体1的stay和物体2的enter连着
                      (currentData.Type == EHitType.CollisionExit && nextData.Type == EHitType.CollisionStay)) //导致物体2的stay和物体1的exit连着)
@@ -120,7 +120,7 @@ namespace DefaultNamespace
                 if (currentData.ID != nextData.ID)
                 {
                     positionEvaluate = CalculateLinearMoveFunction(currentData.GetPos(), nextData.GetPos(),
-                        (float) (nextData.Time - currentData.Time));
+                        nextData.GetTime() - currentData.GetTime());
                 }
                 else
                 {
