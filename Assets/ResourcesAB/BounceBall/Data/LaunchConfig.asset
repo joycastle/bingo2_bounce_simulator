@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Mode: 0
   XInitSpeed: 0
-  InletId: 2
-  XOffset: 2.78
-  YOffset: 0.3324454
-  RecordFromFileName: replay
+  InletId: 3
+  XOffset: 7
+  YOffset: 0
+  RecordFromFileName: 
   RecordLineNum: 0
   XOffsetRandomRange: {x: -0.2, y: 0.2}
   Count: 1
