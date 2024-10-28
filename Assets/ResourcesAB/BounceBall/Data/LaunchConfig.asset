@@ -14,10 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Mode: 0
   XInitSpeed: 0
-  InletId: 3
+  InletId: 2
   XOffset: 2.78
   YOffset: 0.3324454
-  XOffsetRandomRange: {x: -2, y: 2}
+  RecordFromFileName: replay
+  RecordLineNum: 0
+  XOffsetRandomRange: {x: -0.2, y: 0.2}
   Count: 1
   MaxConcurrentBall: 100
   ReplayFileName: '@3_Range_-2-2_Vx0_Num1000'
