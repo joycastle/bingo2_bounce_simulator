@@ -46,14 +46,42 @@ public class Recorder : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D other)
     {
         Log($"OnCollisionEnter2D with {PathDataManager.GetIdentifier(other.gameObject)}, HitPos {gameObject.transform.position}");
+        if (!TryGetAccuratePosition(other, out var position))
+        {
+            position = gameObject.transform.position;
+        }
         _data.PathPoints.Add(new HitPointData()
         {
             ID = PathDataManager.GetIdentifier(other.gameObject),
             Type = EHitType.CollisionEnter,
-            PosX = gameObject.transform.position.x,
-            PosY = gameObject.transform.position.y,
+            PosX = position.x,
+            PosY = position.y,
             Time = _timeElapsed
         });
+    }
+
+    bool TryGetAccuratePosition(Collision2D collision, out Vector2 ret)
+    {
+        // 假设球体直径已知
+        float diameter = 0.65f;  // 例如1.0单位
+        float radius = diameter / 2.0f;
+        
+        if (collision.contacts.Length > 0)
+        {
+            // 遍历所有接触点（一般一个球体只有一个接触点）
+            ContactPoint2D contact = collision.contacts[0];
+            // 碰撞点位置
+            Vector2 collisionPoint = contact.point;
+            // 碰撞法线（指向碰撞物体外部，需要反向来指向球体中心）
+            Vector2 normal = contact.normal;
+
+            // 计算球体中心位置
+            ret = collisionPoint + normal * radius;  // 使用+因为法线指向外部
+            return true;
+        }
+
+        ret = Vector2.negativeInfinity;
+        return false;
     }
 
     private void OnCollisionStay2D(Collision2D other)
@@ -74,12 +102,16 @@ public class Recorder : MonoBehaviour
         }
         else
         {
+            if (!TryGetAccuratePosition(other, out var position))
+            {
+                position = gameObject.transform.position;
+            }
             var nowData = new HitPointData()
             {
                 ID = PathDataManager.GetIdentifier(other.gameObject),
                 Type = EHitType.CollisionStay,
-                PosX = gameObject.transform.position.x,
-                PosY = gameObject.transform.position.y,
+                PosX = position.x,
+                PosY = position.y,
                 Time = _timeElapsed
             };
         
@@ -134,12 +166,16 @@ public class Recorder : MonoBehaviour
     private void OnCollisionExit2D(Collision2D other)
     {
         Log($"OnCollisionExit2D with {PathDataManager.GetIdentifier(other.gameObject)}, HitPos {gameObject.transform.position}");
+        if (!TryGetAccuratePosition(other, out var position))
+        {
+            position = gameObject.transform.position;
+        }
         _data.PathPoints.Add(new HitPointData()
         {
             ID = PathDataManager.GetIdentifier(other.gameObject),
             Type = EHitType.CollisionExit,
-            PosX = gameObject.transform.position.x,
-            PosY = gameObject.transform.position.y,
+            PosX = position.x,
+            PosY = position.y,
             Time = _timeElapsed
         });
     }
@@ -177,7 +213,7 @@ public class Recorder : MonoBehaviour
 
     private void Log(string s)
     {
-        // Debug.Log(s);
+        Debug.Log(s);
     }
 }
 
