@@ -13,13 +13,13 @@ namespace DefaultNamespace
     public class PathData
     {
         public int InletId;
-        public float RealRunDuration;
-        public float Bumper1HitCount;
-        public float Bumper2HitCount;
-        public float Bumper3HitCount;
+        public double RealRunDuration;
+        public double Bumper1HitCount;
+        public double Bumper2HitCount;
+        public double Bumper3HitCount;
         public int OutletId;
 
-        public float InitXSpeed;
+        public double InitXSpeed;
         public List<HitPointData> PathPoints = new List<HitPointData>();
 
         public int GetCollisionCount(EFrameType frameType, int id)
@@ -46,16 +46,38 @@ namespace DefaultNamespace
         CollisionExit
     }
 
-    public struct HitPointData
+    public class HitPointData
     {
         //碰撞到的物体的ID
         public string ID;
         //碰撞类型
         public EHitType Type;
         //碰撞发生的位置
-        public Vector2 Pos;
-        //碰撞发生的时间
-        public float Time;
+        // public Vector2 Pos
+        // {
+        //     get
+        //     {
+        //         return new Vector2((float)_posX, (float)_posY);
+        //     }
+        //     set
+        //     {
+        //         _posX = value.x;
+        //         _posY = value.y;
+        //     }
+        // }
+        public double PosX;
+        public double PosY;
+        // public float Time
+        // {
+        //     get => (float)_time;
+        //     set => _time = value;
+        // }
+        public double Time;
+
+        public Vector2 GetPos()
+        {
+            return new Vector2((float)PosX, (float)PosY);
+        }
 
         public override string ToString()
         {

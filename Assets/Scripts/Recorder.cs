@@ -24,7 +24,8 @@ public class Recorder : MonoBehaviour
         {
             ID = "",
             Type = EHitType.CollisionExit,
-            Pos = gameObject.transform.position,
+            PosX = gameObject.transform.position.x,
+            PosY = gameObject.transform.position.y,
             Time = 0f
         });
         _timeElapsed = 0;
@@ -47,7 +48,8 @@ public class Recorder : MonoBehaviour
         {
             ID = PathDataManager.GetIdentifier(other.gameObject),
             Type = EHitType.CollisionEnter,
-            Pos = gameObject.transform.position,
+            PosX = gameObject.transform.position.x,
+            PosY = gameObject.transform.position.y,
             Time = _timeElapsed
         });
     }
@@ -74,7 +76,8 @@ public class Recorder : MonoBehaviour
             {
                 ID = PathDataManager.GetIdentifier(other.gameObject),
                 Type = EHitType.CollisionStay,
-                Pos = gameObject.transform.position,
+                PosX = gameObject.transform.position.x,
+                PosY = gameObject.transform.position.y,
                 Time = _timeElapsed
             };
         
@@ -86,7 +89,7 @@ public class Recorder : MonoBehaviour
         
                 if (secondLastData.ID == lastData.ID && lastData.ID == nowData.ID)
                 {
-                    if(AreNearlyCollinear(secondLastData.Pos, lastData.Pos, nowData.Pos))
+                    if(AreNearlyCollinear(secondLastData.GetPos(), lastData.GetPos(), nowData.GetPos()))
                     {
                         // _data.PathPoints.RemoveAt(_data.PathPoints.Count - 1);
                         Debug.Log("this collision is collinear, ignore");
@@ -133,7 +136,8 @@ public class Recorder : MonoBehaviour
         {
             ID = PathDataManager.GetIdentifier(other.gameObject),
             Type = EHitType.CollisionExit,
-            Pos = gameObject.transform.position,
+            PosX = gameObject.transform.position.x,
+            PosY = gameObject.transform.position.y,
             Time = _timeElapsed
         });
     }
@@ -149,7 +153,8 @@ public class Recorder : MonoBehaviour
             {
                 ID = PathDataManager.GetIdentifier(other.gameObject),
                 Type = EHitType.CollisionEnter,
-                Pos = gameObject.transform.position,
+                PosX = gameObject.transform.position.x,
+                PosY = gameObject.transform.position.y,
                 Time = _timeElapsed
             });
         }

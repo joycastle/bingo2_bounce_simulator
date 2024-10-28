@@ -26,7 +26,7 @@ namespace DefaultNamespace
         public void Init(PathData data)
         {
             _data = data;
-            SetPosition(_data.PathPoints[0].Pos);
+            SetPosition(_data.PathPoints[0].GetPos());
             StartCoroutine(MoveLoop());
             // GenAllPositionEvaluate();
         }
@@ -78,17 +78,17 @@ namespace DefaultNamespace
             Destroy(gameObject);
         }
         
-        SortedDictionary<float, PositionEvaluate> _dictionary = new ();
-        void GenAllPositionEvaluate()
-        {
-            for (int i = 0; i < _data.PathPoints.Count - 1; i++)
-            {
-                var currentData = _data.PathPoints[i];
-                var nextData = _data.PathPoints[i + 1];
-                var positionEvaluate = GetPositionEvaluateBetween(currentData, nextData, i);
-                _dictionary[currentData.Time] = positionEvaluate;
-            }
-        }
+        // SortedDictionary<float, PositionEvaluate> _dictionary = new ();
+        // void GenAllPositionEvaluate()
+        // {
+        //     for (int i = 0; i < _data.PathPoints.Count - 1; i++)
+        //     {
+        //         var currentData = _data.PathPoints[i];
+        //         var nextData = _data.PathPoints[i + 1];
+        //         var positionEvaluate = GetPositionEvaluateBetween(currentData, nextData, i);
+        //         _dictionary[currentData.Time] = positionEvaluate;
+        //     }
+        // }
 
         PositionEvaluate GetPositionEvaluateBetween(HitPointData currentData, HitPointData nextData, int i)
         {
@@ -103,24 +103,24 @@ namespace DefaultNamespace
             PositionEvaluate positionEvaluate;
             if ((currentData.Type == EHitType.CollisionExit && nextData.Type == EHitType.CollisionEnter))
             {
-                positionEvaluate = CalculateParabolaMoveFunction(currentData.Pos, nextData.Pos,
-                    nextData.Time - currentData.Time);
+                positionEvaluate = CalculateParabolaMoveFunction(currentData.GetPos(), nextData.GetPos(),
+                    (float) (nextData.Time - currentData.Time));
             }
             else if((currentData.Type == EHitType.CollisionEnter && nextData.Type == EHitType.CollisionStay) || 
                     (currentData.Type == EHitType.CollisionEnter && nextData.Type == EHitType.CollisionExit) ||
                     (currentData.Type == EHitType.CollisionStay && nextData.Type == EHitType.CollisionStay) ||
                     (currentData.Type == EHitType.CollisionStay && nextData.Type == EHitType.CollisionExit))
             {
-                positionEvaluate = CalculateLinearMoveFunction(currentData.Pos, nextData.Pos,
-                    nextData.Time - currentData.Time);
+                positionEvaluate = CalculateLinearMoveFunction(currentData.GetPos(), nextData.GetPos(),
+                    (float) (nextData.Time - currentData.Time));
             }
             else if ((currentData.Type == EHitType.CollisionStay && nextData.Type == EHitType.CollisionEnter) || //可能物体1的stay和物体2的enter连着
                      (currentData.Type == EHitType.CollisionExit && nextData.Type == EHitType.CollisionStay)) //导致物体2的stay和物体1的exit连着)
             {
                 if (currentData.ID != nextData.ID)
                 {
-                    positionEvaluate = CalculateLinearMoveFunction(currentData.Pos, nextData.Pos,
-                        nextData.Time - currentData.Time);
+                    positionEvaluate = CalculateLinearMoveFunction(currentData.GetPos(), nextData.GetPos(),
+                        (float) (nextData.Time - currentData.Time));
                 }
                 else
                 {

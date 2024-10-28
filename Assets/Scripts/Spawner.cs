@@ -92,7 +92,7 @@ public class Spawner : MonoBehaviour
     
     private void Awake()
     {
-        LitJsonRegister.Register();
+        // LitJsonRegister.Register();
     }
     
     void Start()
@@ -165,7 +165,6 @@ public static class LitJsonRegister
     static bool registerd = false;
     public static void Register()
     {
-
         if (registerd) return;
         registerd = true;
 
