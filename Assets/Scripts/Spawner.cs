@@ -21,8 +21,37 @@ public class Spawner : MonoBehaviour
     public LaunchConfig Config;
     public EMode Mode => Config.Mode;
     
-    public float XOffset => Config.XOffset;
-    public float YOffset => Config.YOffset;
+    public float XOffset
+    {
+        get
+        {
+            if (Config.RecordFromFileName == null || Config.RecordFromFileName == "")
+            {
+                return Config.XOffset;
+            }
+            else
+            {
+                var data = PathDataManager.GetData(Config.RecordFromFileName, Config.RecordLineNum);
+                return (float) data.InitXOffset;
+            }
+        }
+    }
+
+    public float YOffset
+    {
+        get
+        {
+            if (Config.RecordFromFileName == null || Config.RecordFromFileName == "")
+            {
+                return Config.YOffset;
+            }
+            else
+            {
+                var data = PathDataManager.GetData(Config.RecordFromFileName, Config.RecordLineNum);
+                return (float) data.InitYOffset;
+            }
+        }
+    }
     public float XInitSpeed => Config.XInitSpeed;
     
     public int InletId => Config.InletId;
@@ -35,8 +64,7 @@ public class Spawner : MonoBehaviour
     
     private void SpawnBallAtGivenPos(EMode mode)
     {
-        var position = new Vector3(GetStartPosition(InletId).x + XOffset, GetStartPosition(InletId).y + YOffset,
-            GetStartPosition(InletId).z);
+        var position = new Vector3(GetStartPosition(InletId).x + XOffset, GetStartPosition(InletId).y + YOffset);
         SpawnBall(mode, InletId, position, new Vector2(XInitSpeed, 0));
     }
     
@@ -56,8 +84,7 @@ public class Spawner : MonoBehaviour
             {
                 var xRandom = Random.Range(XOffsetRange.x, XOffsetRange.y);
                 var yRandom = Random.Range(Config.GetYOffsetRange(xRandom).x, Config.GetYOffsetRange(xRandom).y);
-                var position = new Vector3(GetStartPosition(InletId).x + xRandom, GetStartPosition(InletId).y + yRandom,
-                    GetStartPosition(InletId).z);
+                var position = new Vector3(GetStartPosition(InletId).x + xRandom, GetStartPosition(InletId).y + yRandom);
                 SpawnBall(Mode, InletId, position, new Vector2(XInitSpeed, 0));
                 spawnedBall++;
                 ConcurrentBall++;
@@ -84,10 +111,10 @@ public class Spawner : MonoBehaviour
         return Inlets[index].transform.position;
     }
     
-    void SpawnBall(EMode mode, int inletId, Vector3 position, Vector2 velocity)
+    void SpawnBall(EMode mode, int inletId, Vector2 position, Vector2 velocity)
     {
         var go = Instantiate(GetInstance(mode), position, Quaternion.identity);
-        PostProcess(mode, go, velocity, inletId);
+        PostProcess(mode, go, velocity, inletId, position);
     }
     
     private void Awake()
@@ -123,7 +150,7 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    void PostProcess(EMode mode, GameObject go, Vector2 velocity, int inletId)
+    void PostProcess(EMode mode, GameObject go, Vector2 velocity, int inletId, Vector2 initPosition)
     {
         if (mode == EMode.Replay)
         {
@@ -141,7 +168,8 @@ public class Spawner : MonoBehaviour
             var rigidbody2D = go.GetComponent<Rigidbody2D>();
             rigidbody2D.velocity = velocity;
             var recorder = go.GetComponent<Recorder>();
-            recorder.RecordInParam(inletId, velocity.x);
+            var inletPos = GetStartPosition(inletId);
+            recorder.RecordInParam(inletId, velocity.x, initPosition.x - inletPos.x, initPosition.y - inletPos.y);
         }
         else if(mode == EMode.Normal)
         {

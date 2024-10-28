@@ -10,10 +10,12 @@ public class Recorder : MonoBehaviour
     private float _timeElapsed;
     private const float MaxWaitTime = 30f;
 
-    public void RecordInParam(int inletId, float initXSpeed)
+    public void RecordInParam(int inletId, float initXSpeed, float initXOffset, float initYOffset)
     {
         _data.InletId = inletId;
         _data.InitXSpeed = initXSpeed;
+        _data.InitXOffset = initXOffset;
+        _data.InitYOffset = initYOffset;
     }
     
     void Awake()

@@ -131,7 +131,9 @@ namespace DefaultNamespace
             else
             {
                 Debug.LogError($"Unsupport Move at Index {i}: {currentData.ToString()} to {nextData.ToString()}");
-                return null;
+                // return null;
+                positionEvaluate = CalculateLinearMoveFunction(currentData.GetPos(), nextData.GetPos(),
+                    nextData.GetTime() - currentData.GetTime());
             }
 
             return positionEvaluate;
@@ -160,7 +162,7 @@ namespace DefaultNamespace
 
         ParabolaEvaluate CalculateParabolaMoveFunction(Vector2 startPos, Vector2 endPos, float time)
         {
-            var v_y0 = (endPos.y - startPos.y) / time + 0.5f * Mathf.Abs(Physics.gravity.y * time);
+            var v_y0 = (endPos.y - startPos.y) / time + 0.5f * Mathf.Abs(Physics2D.gravity.y * time);
             var v_x0 = (endPos.x - startPos.x) / time;
             return new ParabolaEvaluate(startPos, endPos, new Vector2(v_x0, v_y0), time);
         }
@@ -177,7 +179,7 @@ namespace DefaultNamespace
                 theta = Mathf.Atan((endPos.y - startPos.y) / (endPos.x - startPos.x));
             }
 
-            var a = Physics.gravity.y * Mathf.Sin(theta);
+            var a = Physics2D.gravity.y * Mathf.Sin(theta);
             var distance = Vector2.Distance(startPos, endPos);
             var v0 = distance / time - 0.5f * a * time;
             var v_x0 = endPos.x > startPos.x ? Mathf.Abs(v0 * Mathf.Cos(theta)) : -Mathf.Abs(v0 * Mathf.Cos(theta));
@@ -240,7 +242,7 @@ namespace DefaultNamespace
 
             protected override Vector2 GetSimulatedPosition(float timeElapsed)
             {
-                var yOffset = _startVelocity.y * timeElapsed + 0.5f * Physics.gravity.y * timeElapsed * timeElapsed;
+                var yOffset = _startVelocity.y * timeElapsed + 0.5f * Physics2D.gravity.y * timeElapsed * timeElapsed;
                 var xOffset = _startVelocity.x * timeElapsed;
                 return new Vector2(_startPosition.x + xOffset, _startPosition.y + yOffset);
             }
@@ -261,7 +263,7 @@ namespace DefaultNamespace
             protected override Vector2 GetSimulatedPosition(float timeElapsed)
             {
                 var theta = Mathf.Atan(_startVelocity.y / _startVelocity.x);
-                var a = Physics.gravity.y * Mathf.Sin(theta);
+                var a = Physics2D.gravity.y * Mathf.Sin(theta);
                 var a_x = a * Mathf.Cos(theta);
                 var a_y = a * Mathf.Sin(theta);
                 var xOffset = _startVelocity.x * timeElapsed + 0.5f * a_x * timeElapsed * timeElapsed;

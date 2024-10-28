@@ -13,6 +13,8 @@ namespace DefaultNamespace
     public class PathData
     {
         public int InletId;
+        public double InitXOffset;
+        public double InitYOffset;
         public double RealRunDuration;
         public double Bumper1HitCount;
         public double Bumper2HitCount;
