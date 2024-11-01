@@ -190,7 +190,7 @@ namespace GameLib.Main.Modules.Campaigns.BounceBall.View
         {
             using (var writer = new StreamWriter(filePath, true))
             {
-                while (!dataQueue.IsEmpty || !tcs.Task.IsCompleted)
+                while (!dataQueue.IsEmpty || (tcs != null && !tcs.Task.IsCompleted))
                 {
                     if (dataQueue.TryDequeue(out string data))
                     {
@@ -209,6 +209,7 @@ namespace GameLib.Main.Modules.Campaigns.BounceBall.View
         {
             Debug.Log("StopRecord");
             tcs.SetResult(true);
+            tcs = null;
             inBatchMode = false;
         }
         
