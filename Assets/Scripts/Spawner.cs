@@ -72,6 +72,7 @@ namespace GameLib.Main.Modules.Campaigns.BounceBall.View
         [PropertyOrder(2)]
         public Vector2 XOffsetRange => Config.XOffsetRandomRange;
         public static int ConcurrentBall = 0;
+        public int spawnBallCdInMilliSecond => Config.SpawnBallCd;
         [Button, PropertyOrder(2)]
         public IEnumerator SpawnBallAtRandomPos()
         {
@@ -79,10 +80,12 @@ namespace GameLib.Main.Modules.Campaigns.BounceBall.View
             var startTime = Time.realtimeSinceStartup;
 
             var spawnedBall = 0;
+            var lastSpawnTime = Time.realtimeSinceStartup;
             while(spawnedBall < Config.Count)
             {
-                if (ConcurrentBall < Config.MaxConcurrentBall)
+                if (ConcurrentBall < Config.MaxConcurrentBall && lastSpawnTime + spawnBallCdInMilliSecond / 1000f < Time.realtimeSinceStartup)
                 {
+                    lastSpawnTime = Time.realtimeSinceStartup;
                     var xRandom = Random.Range(XOffsetRange.x, XOffsetRange.y);
                     var yRandom = Random.Range(Config.GetYOffsetRange(xRandom).x, Config.GetYOffsetRange(xRandom).y);
                     var position = new Vector3(GetStartPosition(InletId).x + xRandom, GetStartPosition(InletId).y + yRandom);
@@ -92,7 +95,7 @@ namespace GameLib.Main.Modules.Campaigns.BounceBall.View
                 }
                 else
                 {
-                    yield return new WaitUntil(() => ConcurrentBall < Config.MaxConcurrentBall);
+                    yield return new WaitUntil(() => ConcurrentBall < Config.MaxConcurrentBall && lastSpawnTime + spawnBallCdInMilliSecond / 1000f < Time.realtimeSinceStartup);
                 }
             }
             

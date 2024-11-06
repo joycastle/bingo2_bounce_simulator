@@ -27,6 +27,8 @@ public class LaunchConfig : ScriptableObject
     public int Count = 0;
     [ShowIf("IsRecordOrNormalMode"), BoxGroup("随机出球参数"), Header("最大同屏球数")]
     public int MaxConcurrentBall = 0;
+    [ShowIf("IsRecordOrNormalMode"), BoxGroup("随机出球参数"), Header("出球间隔/ms")]
+    public int SpawnBallCd = 30;
 
     [ShowIf("IsReplayMode"), BoxGroup("json回放参数"), Header("回放的json文件名")] 
     public string ReplayFileName = "replay";

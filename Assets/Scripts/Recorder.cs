@@ -45,11 +45,12 @@ public class Recorder : MonoBehaviour
     
     private void OnCollisionEnter2D(Collision2D other)
     {
-        Log($"OnCollisionEnter2D with {PathDataManager.GetIdentifier(other.gameObject)}, HitPos {gameObject.transform.position}");
+        Log($"OnCollisionEnter2D with {PathDataManager.GetIdentifier(other.gameObject)}, HitPos {gameObject.transform.position}, Impulse {other.contacts[0].normalImpulse}");
         if (!TryGetAccuratePosition(other, out var position))
         {
             position = gameObject.transform.position;
         }
+        
         _data.PathPoints.Add(new HitPointData()
         {
             ID = PathDataManager.GetIdentifier(other.gameObject),
